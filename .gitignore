@@ -1,0 +1,23 @@
+# Dependencias
+/vendor/
+/node_modules/
+
+# Configuracoes locais/sensiveis
+/.env
+/.env.*
+
+# Logs e arquivos temporarios
+/logs/*.log
+*.log
+*.tmp
+*.bak
+
+# Uploads de runtime (mantem apenas o marcador de pasta)
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# Artefatos de sistema/IDE
+.DS_Store
+Thumbs.db
+/.idea/
+/.vscode/
