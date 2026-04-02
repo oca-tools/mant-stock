@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller de categorias
 class CategoriasController extends ControllerBase
 {

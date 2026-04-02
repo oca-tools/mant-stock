@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Roteador simples do sistema
 class Router
 {

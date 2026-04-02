@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Servico para registrar logs de auditoria
 class LogService
 {

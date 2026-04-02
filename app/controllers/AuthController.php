@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller de autenticacao
 class AuthController extends ControllerBase
 {
@@ -19,9 +19,9 @@ class AuthController extends ControllerBase
         }
 
         $usuarioModel = new Usuario();
-        $usuario = $usuarioModel->buscarPorEmail($email);
+        $usuario = $usuarioModel->autenticarPorEmailSenha($email, $senha);
 
-        if (!$usuario || !password_verify($senha, $usuario['senha_hash'])) {
+        if (!$usuario) {
             $this->render('auth/login', ['erro' => 'Credenciais invalidas.']);
             return;
         }

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller de produtos
 class ProdutosController extends ControllerBase
 {
@@ -28,6 +28,57 @@ class ProdutosController extends ControllerBase
         $categorias = $categoriaModel->listar();
         $config = require __DIR__ . '/../config/config.php';
         $this->render('produtos/criar', ['categorias' => $categorias, 'erro' => null, 'unidades' => $config['listas']['unidades_medida']]);
+    }
+
+    public function exportarExcel()
+    {
+        $busca = trim($_GET['busca'] ?? '');
+        $model = new Produto();
+        $produtos = $model->listarParaExportacao($busca);
+
+        $linhas = array_map(function ($p) {
+            return [
+                $p['nome'],
+                $p['categoria_nome'] ?? '',
+                $p['codigo_interno'] ?? '',
+                $p['unidade_medida'] ?? '',
+                $p['estoque_atual'] ?? 0,
+                $p['estoque_minimo'] ?? 0,
+                $p['localizacao'] ?? '',
+                $p['observacoes'] ?? ''
+            ];
+        }, $produtos);
+
+        $this->exportarCsv(
+            'produtos.csv',
+            ['Produto', 'Categoria', 'Código Interno', 'Unidade', 'Estoque Atual', 'Estoque Mínimo', 'Localização', 'Observações'],
+            $linhas
+        );
+    }
+
+    public function exportarPdf()
+    {
+        $busca = trim($_GET['busca'] ?? '');
+        $model = new Produto();
+        $produtos = $model->listarParaExportacao($busca);
+
+        $linhas = array_map(function ($p) {
+            return [
+                $p['nome'],
+                $p['categoria_nome'] ?? '',
+                $p['estoque_atual'] ?? 0,
+                $p['estoque_minimo'] ?? 0,
+                $p['localizacao'] ?? ''
+            ];
+        }, $produtos);
+
+        $subtitulo = $busca !== '' ? 'Filtro de busca: ' . $busca : 'Sem filtro de busca';
+        $this->exportarPdfHtmlTabela(
+            'Exportação de Produtos',
+            $subtitulo,
+            ['Produto', 'Categoria', 'Estoque Atual', 'Estoque Mínimo', 'Localização'],
+            $linhas
+        );
     }
 
     public function armazenar()

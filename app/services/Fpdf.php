@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
  * FPDF 1.82 - http://www.fpdf.org/
  * Versao reduzida com suporte basico a tabelas

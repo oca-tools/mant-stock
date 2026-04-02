@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller do estoque atual
 class EstoqueController extends ControllerBase
 {

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Definicao de rotas
 return [
     // Perfis
@@ -8,12 +8,16 @@ return [
     ['metodo' => 'GET', 'caminho' => '/login', 'acao' => ['AuthController', 'formLogin'], 'opcoes' => []],
     ['metodo' => 'POST', 'caminho' => '/login', 'acao' => ['AuthController', 'login'], 'opcoes' => []],
     ['metodo' => 'POST', 'caminho' => '/logout', 'acao' => ['AuthController', 'logout'], 'opcoes' => ['auth' => true]],
+    ['metodo' => 'GET', 'caminho' => '/cadastro/aceitar', 'acao' => ['CadastroController', 'formAceite'], 'opcoes' => []],
+    ['metodo' => 'POST', 'caminho' => '/cadastro/aceitar', 'acao' => ['CadastroController', 'concluirCadastro'], 'opcoes' => []],
 
     ['metodo' => 'GET', 'caminho' => '/dashboard', 'acao' => ['DashboardController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/estoque', 'acao' => ['EstoqueController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/busca', 'acao' => ['BuscaController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
 
     ['metodo' => 'GET', 'caminho' => '/produtos', 'acao' => ['ProdutosController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/produtos/excel', 'acao' => ['ProdutosController', 'exportarExcel'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/produtos/pdf', 'acao' => ['ProdutosController', 'exportarPdf'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/produtos/ver/{id}', 'acao' => ['ProdutosController', 'ver'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/produtos/criar', 'acao' => ['ProdutosController', 'criar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
     ['metodo' => 'POST', 'caminho' => '/produtos', 'acao' => ['ProdutosController', 'armazenar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
@@ -29,12 +33,19 @@ return [
     ['metodo' => 'POST', 'caminho' => '/categorias/excluir/{id}', 'acao' => ['CategoriasController', 'excluir'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
 
     ['metodo' => 'GET', 'caminho' => '/movimentacoes', 'acao' => ['MovimentacoesController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/movimentacoes/excel', 'acao' => ['MovimentacoesController', 'exportarExcel'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/movimentacoes/pdf', 'acao' => ['MovimentacoesController', 'exportarPdf'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
 
     ['metodo' => 'GET', 'caminho' => '/entradas', 'acao' => ['EntradasController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/entradas/excel', 'acao' => ['EntradasController', 'exportarExcel'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/entradas/pdf', 'acao' => ['EntradasController', 'exportarPdf'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/entradas/criar', 'acao' => ['EntradasController', 'criar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
     ['metodo' => 'POST', 'caminho' => '/entradas', 'acao' => ['EntradasController', 'armazenar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
 
     ['metodo' => 'GET', 'caminho' => '/saidas', 'acao' => ['SaidasController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/saidas/excel', 'acao' => ['SaidasController', 'exportarExcel'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/saidas/pdf', 'acao' => ['SaidasController', 'exportarPdf'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'GET', 'caminho' => '/saidas/comprovante/{id}', 'acao' => ['SaidasController', 'comprovante'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/saidas/criar', 'acao' => ['SaidasController', 'criar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
     ['metodo' => 'POST', 'caminho' => '/saidas', 'acao' => ['SaidasController', 'armazenar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
 
@@ -53,6 +64,8 @@ return [
 
     ['metodo' => 'GET', 'caminho' => '/inventarios', 'acao' => ['InventariosController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/inventarios/criar', 'acao' => ['InventariosController', 'criar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
+    ['metodo' => 'POST', 'caminho' => '/inventarios/abrir', 'acao' => ['InventariosController', 'abrirCiclo'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
+    ['metodo' => 'POST', 'caminho' => '/inventarios/fechar', 'acao' => ['InventariosController', 'fecharCiclo'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
     ['metodo' => 'POST', 'caminho' => '/inventarios', 'acao' => ['InventariosController', 'armazenar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado']]],
 
     ['metodo' => 'GET', 'caminho' => '/relatorios', 'acao' => ['RelatoriosController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
@@ -62,6 +75,8 @@ return [
     ['metodo' => 'GET', 'caminho' => '/usuarios', 'acao' => ['UsuariosController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
     ['metodo' => 'GET', 'caminho' => '/usuarios/criar', 'acao' => ['UsuariosController', 'criar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
     ['metodo' => 'POST', 'caminho' => '/usuarios', 'acao' => ['UsuariosController', 'armazenar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
+    ['metodo' => 'GET', 'caminho' => '/usuarios/convites/novo', 'acao' => ['UsuariosController', 'formConvite'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
+    ['metodo' => 'POST', 'caminho' => '/usuarios/convites', 'acao' => ['UsuariosController', 'enviarConvite'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
     ['metodo' => 'GET', 'caminho' => '/usuarios/editar/{id}', 'acao' => ['UsuariosController', 'editar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
     ['metodo' => 'POST', 'caminho' => '/usuarios/editar/{id}', 'acao' => ['UsuariosController', 'atualizar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
     ['metodo' => 'POST', 'caminho' => '/usuarios/desativar/{id}', 'acao' => ['UsuariosController', 'desativar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]]

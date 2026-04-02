@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Servico de PDF simples para relatorios
 class PdfService
 {

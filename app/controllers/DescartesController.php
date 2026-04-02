@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller de descartes
 class DescartesController extends ControllerBase
 {

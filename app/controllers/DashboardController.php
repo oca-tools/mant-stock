@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller do dashboard
 class DashboardController extends ControllerBase
 {

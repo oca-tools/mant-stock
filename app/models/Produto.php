@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Modelo de produtos
 class Produto extends ModeloBase
 {
@@ -21,6 +21,25 @@ class Produto extends ModeloBase
         }
         $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function listarParaExportacao($busca = '', $ordem = 'nome_asc')
+    {
+        $sql = 'SELECT p.*, c.nome AS categoria_nome FROM produtos p LEFT JOIN categorias c ON c.id = p.categoria_id';
+        $params = [];
+        if ($busca !== '') {
+            $sql .= ' WHERE p.nome LIKE :busca OR p.codigo_interno LIKE :busca';
+            $params[':busca'] = '%' . $busca . '%';
+        }
+        $ordemSql = ($ordem === 'nome_desc') ? 'p.nome DESC' : 'p.nome ASC';
+        $sql .= ' ORDER BY ' . $ordemSql;
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $chave => $valor) {
+            $stmt->bindValue($chave, $valor, PDO::PARAM_STR);
+        }
         $stmt->execute();
         return $stmt->fetchAll();
     }

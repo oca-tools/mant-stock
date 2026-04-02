@@ -1,64 +1,75 @@
-﻿<?php $titulo = 'Detalhes do Produto'; require __DIR__ . '/../layouts/header.php'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<?php $titulo = 'Detalhes do Produto'; require __DIR__ . '/../layouts/header.php'; ?>
+
+<section class="page-header">
     <div>
-        <h3><?php echo e($produto['nome']); ?></h3>
-        <div class="text-muted">Código: <?php echo e($produto['codigo_interno']); ?></div>
+        <h2 class="page-header__titulo"><?php echo e($produto['nome']); ?></h2>
+        <p class="page-header__subtitulo">Código interno: <?php echo e($produto['codigo_interno']); ?></p>
     </div>
-    <a class="btn btn-outline-secondary" href="<?php echo url('produtos'); ?>">Voltar</a>
-</div>
+    <div class="page-header__acoes">
+        <a class="btn btn-outline-secondary" href="<?php echo url('produtos'); ?>">Voltar</a>
+    </div>
+</section>
+
 <div class="row g-3">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
+    <div class="col-xl-4">
+        <section class="panel">
+            <div class="panel__body">
                 <?php if (!empty($produto['imagem'])): ?>
                     <img src="<?php echo url('uploads/' . $produto['imagem']); ?>" class="img-fluid rounded mb-3" alt="Produto">
                 <?php endif; ?>
-                <div><strong>Categoria:</strong> <?php echo e($produto['categoria_nome']); ?></div>
-                <div><strong>Unidade:</strong> <?php echo e($produto['unidade_medida']); ?></div>
-                <div><strong>Estoque Atual:</strong> <?php echo e($produto['estoque_atual']); ?></div>
-                <div><strong>Estoque Mínimo:</strong> <?php echo e($produto['estoque_minimo']); ?></div>
-                <div><strong>Localização:</strong> <?php echo e($produto['localizacao']); ?></div>
-                <div><strong>Observações:</strong> <?php echo e($produto['observacoes']); ?></div>
+                <div class="d-flex justify-content-between py-1 border-bottom"><span class="text-muted">Categoria</span><strong><?php echo e($produto['categoria_nome']); ?></strong></div>
+                <div class="d-flex justify-content-between py-1 border-bottom"><span class="text-muted">Unidade</span><strong><?php echo e($produto['unidade_medida']); ?></strong></div>
+                <div class="d-flex justify-content-between py-1 border-bottom"><span class="text-muted">Estoque atual</span><strong><?php echo e($produto['estoque_atual']); ?></strong></div>
+                <div class="d-flex justify-content-between py-1 border-bottom"><span class="text-muted">Estoque mínimo</span><strong><?php echo e($produto['estoque_minimo']); ?></strong></div>
+                <div class="d-flex justify-content-between py-1"><span class="text-muted">Localização</span><strong><?php echo e($produto['localizacao']); ?></strong></div>
+                <hr>
+                <div><span class="text-muted d-block mb-1">Observações</span><?php echo e($produto['observacoes']); ?></div>
             </div>
-        </div>
+        </section>
     </div>
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body">
-                <h5>Últimas Movimentações</h5>
+
+    <div class="col-xl-8">
+        <section class="panel">
+            <div class="panel__body">
+                <h3 class="panel__titulo">Últimas Movimentações</h3>
                 <div class="table-responsive">
-                    <table class="table table-sm">
+                    <table class="table align-middle">
                         <thead>
                             <tr>
                                 <th>Data</th>
                                 <th>Tipo</th>
                                 <th>Quantidade</th>
-                                <th>Usuario</th>
+                                <th>Usuário</th>
                                 <th>Observações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($movimentacoes as $m): ?>
+                            <?php if (empty($movimentacoes)): ?>
                                 <tr>
-                                    <td><?php echo e($m['data_movimentacao']); ?></td>
-                                    <td><?php echo e($m['tipo_movimentacao']); ?></td>
-                                    <td><?php echo e($m['quantidade']); ?></td>
-                                    <td><?php echo e($m['usuario_nome']); ?></td>
-                                    <td><?php echo e($m['observacoes']); ?></td>
+                                    <td colspan="5">
+                                        <div class="empty-state">
+                                            <i class="bi bi-clock-history"></i>
+                                            Sem movimentações recentes para este produto.
+                                        </div>
+                                    </td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php else: ?>
+                                <?php foreach ($movimentacoes as $m): ?>
+                                    <tr>
+                                        <td><?php echo e($m['data_movimentacao']); ?></td>
+                                        <td><?php echo e($m['tipo_movimentacao']); ?></td>
+                                        <td><?php echo e($m['quantidade']); ?></td>
+                                        <td><?php echo e($m['usuario_nome']); ?></td>
+                                        <td><?php echo e($m['observacoes']); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </div>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
-
-
-
-
-
-
-

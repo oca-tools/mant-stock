@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller de busca global
 class BuscaController extends ControllerBase
 {

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Seed de usuario administrador
 require __DIR__ . '/../../app/services/Conexao.php';
 

@@ -1,10 +1,31 @@
-﻿<?php
+<?php
 // Modelo de ferramentas
 class Ferramenta extends ModeloBase
 {
-    public function listar()
+    public function listar($limite = 50, $offset = 0)
     {
-        return $this->db->query('SELECT * FROM ferramentas ORDER BY nome')->fetchAll();
+        $sql = 'SELECT f.*, u.nome AS usuario_cadastro_nome
+                FROM ferramentas f
+                LEFT JOIN usuarios u ON u.id = f.usuario_cadastro_id
+                ORDER BY f.nome ASC';
+
+        if ($limite !== null) {
+            $sql .= ' LIMIT :limite OFFSET :offset';
+        }
+
+        $stmt = $this->db->prepare($sql);
+        if ($limite !== null) {
+            $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function contar()
+    {
+        $linha = $this->db->query('SELECT COUNT(*) AS total FROM ferramentas')->fetch();
+        return (int)($linha['total'] ?? 0);
     }
 
     public function buscarPorId($id)
@@ -16,11 +37,15 @@ class Ferramenta extends ModeloBase
 
     public function criar($dados)
     {
-        $stmt = $this->db->prepare('INSERT INTO ferramentas (nome, descricao, status) VALUES (:nome, :descricao, :status)');
+        $stmt = $this->db->prepare(
+            'INSERT INTO ferramentas (nome, descricao, status, usuario_cadastro_id)
+             VALUES (:nome, :descricao, :status, :usuario_cadastro_id)'
+        );
         $stmt->execute([
             ':nome' => $dados['nome'],
             ':descricao' => $dados['descricao'],
-            ':status' => $dados['status']
+            ':status' => $dados['status'],
+            ':usuario_cadastro_id' => $dados['usuario_cadastro_id']
         ]);
         return $this->db->lastInsertId();
     }

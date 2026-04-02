@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Modelo de categorias
 class Categoria extends ModeloBase
 {

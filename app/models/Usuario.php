@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Modelo de usuarios
 class Usuario extends ModeloBase
 {
@@ -7,11 +7,22 @@ class Usuario extends ModeloBase
         return $this->db->query('SELECT id, nome, email, tipo_usuario, ativo, created_at FROM usuarios ORDER BY nome')->fetchAll();
     }
 
-    public function buscarPorEmail($email)
+    public function listarAtivosPorEmail($email)
     {
-        $stmt = $this->db->prepare('SELECT * FROM usuarios WHERE email = :email AND ativo = 1 LIMIT 1');
+        $stmt = $this->db->prepare('SELECT * FROM usuarios WHERE email = :email AND ativo = 1 ORDER BY id ASC');
         $stmt->execute([':email' => $email]);
-        return $stmt->fetch();
+        return $stmt->fetchAll();
+    }
+
+    public function autenticarPorEmailSenha($email, $senha)
+    {
+        $usuarios = $this->listarAtivosPorEmail($email);
+        foreach ($usuarios as $usuario) {
+            if (password_verify($senha, $usuario['senha_hash'])) {
+                return $usuario;
+            }
+        }
+        return null;
     }
 
     public function buscarPorId($id)
@@ -19,6 +30,20 @@ class Usuario extends ModeloBase
         $stmt = $this->db->prepare('SELECT * FROM usuarios WHERE id = :id');
         $stmt->execute([':id' => $id]);
         return $stmt->fetch();
+    }
+
+    public function contarPorEmail($email, $ignorarUsuarioId = null)
+    {
+        $sql = 'SELECT COUNT(*) AS total FROM usuarios WHERE email = :email';
+        $params = [':email' => $email];
+        if (!empty($ignorarUsuarioId)) {
+            $sql .= ' AND id <> :ignorar_id';
+            $params[':ignorar_id'] = $ignorarUsuarioId;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        $linha = $stmt->fetch();
+        return (int)($linha['total'] ?? 0);
     }
 
     public function criar($dados)
@@ -32,6 +57,26 @@ class Usuario extends ModeloBase
             ':ativo' => $dados['ativo']
         ]);
         return $this->db->lastInsertId();
+    }
+
+    public function senhaJaUtilizadaNoEmail($email, $senha, $ignorarUsuarioId = null)
+    {
+        $sql = 'SELECT id, senha_hash FROM usuarios WHERE email = :email';
+        $params = [':email' => $email];
+        if (!empty($ignorarUsuarioId)) {
+            $sql .= ' AND id <> :ignorar_id';
+            $params[':ignorar_id'] = $ignorarUsuarioId;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        $usuarios = $stmt->fetchAll();
+        foreach ($usuarios as $usuario) {
+            if (password_verify($senha, $usuario['senha_hash'])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function atualizar($id, $dados)

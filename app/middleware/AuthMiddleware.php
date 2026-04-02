@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Middleware de autenticacao
 class AuthMiddleware
 {

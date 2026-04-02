@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Controller de itens criticos
 class CriticosController extends ControllerBase
 {

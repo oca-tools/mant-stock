@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Modelo de descartes
 class Descarte extends ModeloBase
 {

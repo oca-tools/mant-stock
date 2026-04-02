@@ -1,15 +1,16 @@
-﻿-- Script SQL completo do sistema de estoque da manutencao
+-- Script SQL completo do sistema de estoque da manutencao
 CREATE DATABASE IF NOT EXISTS estoque_manutencao CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE estoque_manutencao;
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(120) NOT NULL,
-    email VARCHAR(120) NOT NULL UNIQUE,
+    email VARCHAR(120) NOT NULL,
     senha_hash VARCHAR(255) NOT NULL,
     tipo_usuario ENUM('Administrador', 'Almoxarifado', 'Consulta') NOT NULL,
     ativo TINYINT(1) NOT NULL DEFAULT 1,
-    created_at DATETIME NOT NULL
+    created_at DATETIME NOT NULL,
+    INDEX idx_usuarios_email (email)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS categorias (
@@ -92,28 +93,53 @@ CREATE TABLE IF NOT EXISTS ferramentas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(120) NOT NULL,
     descricao VARCHAR(255) NULL,
-    status ENUM('Disponivel','Emprestada','Em manutencao') NOT NULL DEFAULT 'Disponivel'
+    status ENUM('Disponivel','Emprestada','Em manutencao') NOT NULL DEFAULT 'Disponivel',
+    usuario_cadastro_id INT NULL,
+    CONSTRAINT fk_ferramentas_usuario_cadastro FOREIGN KEY (usuario_cadastro_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS emprestimos_ferramentas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ferramenta_id INT NOT NULL,
     usuario_responsavel VARCHAR(120) NOT NULL,
+    usuario_executor_id INT NULL,
+    usuario_devolucao_id INT NULL,
     data_retirada DATETIME NOT NULL,
     data_devolucao DATETIME NULL,
     status VARCHAR(30) NOT NULL,
-    CONSTRAINT fk_emp_ferramenta FOREIGN KEY (ferramenta_id) REFERENCES ferramentas(id) ON UPDATE CASCADE ON DELETE RESTRICT
+    CONSTRAINT fk_emp_ferramenta FOREIGN KEY (ferramenta_id) REFERENCES ferramentas(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_emp_usuario_executor FOREIGN KEY (usuario_executor_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    CONSTRAINT fk_emp_usuario_devolucao FOREIGN KEY (usuario_devolucao_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS inventarios_mensais (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    competencia CHAR(7) NOT NULL UNIQUE,
+    status ENUM('aberto','fechado') NOT NULL DEFAULT 'aberto',
+    observacoes_abertura VARCHAR(180) NULL,
+    observacoes_fechamento VARCHAR(180) NULL,
+    usuario_abertura_id INT NOT NULL,
+    usuario_fechamento_id INT NULL,
+    data_abertura DATETIME NOT NULL,
+    data_fechamento DATETIME NULL,
+    CONSTRAINT fk_inv_mensal_usuario_abertura FOREIGN KEY (usuario_abertura_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_inv_mensal_usuario_fechamento FOREIGN KEY (usuario_fechamento_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS inventarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    inventario_mensal_id INT NOT NULL,
     produto_id INT NOT NULL,
     quantidade_sistema DECIMAL(12,2) NOT NULL,
     quantidade_real DECIMAL(12,2) NOT NULL,
     diferenca DECIMAL(12,2) NOT NULL,
     usuario_id INT NOT NULL,
     motivo_ajuste VARCHAR(180) NULL,
+    ajuste_aplicado TINYINT(1) NOT NULL DEFAULT 0,
+    data_ajuste DATETIME NULL,
     data_inventario DATETIME NOT NULL,
+    UNIQUE KEY uq_inventario_mes_produto (inventario_mensal_id, produto_id),
+    CONSTRAINT fk_inv_mensal FOREIGN KEY (inventario_mensal_id) REFERENCES inventarios_mensais(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_inv_produto FOREIGN KEY (produto_id) REFERENCES produtos(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_inv_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
@@ -131,6 +157,25 @@ CREATE TABLE IF NOT EXISTS logs (
     dados_depois JSON NULL,
     data_log DATETIME NOT NULL,
     CONSTRAINT fk_logs_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS convites_usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(120) NOT NULL,
+    nome_sugerido VARCHAR(120) NULL,
+    tipo_usuario ENUM('Administrador', 'Almoxarifado', 'Consulta') NOT NULL,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    status ENUM('pendente', 'aceito', 'expirado', 'cancelado') NOT NULL DEFAULT 'pendente',
+    usuario_convite_id INT NOT NULL,
+    usuario_criado_id INT NULL,
+    expira_em DATETIME NOT NULL,
+    criado_em DATETIME NOT NULL,
+    usado_em DATETIME NULL,
+    CONSTRAINT fk_convites_usuario_convite FOREIGN KEY (usuario_convite_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_convites_usuario_criado FOREIGN KEY (usuario_criado_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    INDEX idx_convites_email (email),
+    INDEX idx_convites_status (status),
+    INDEX idx_convites_expira (expira_em)
 ) ENGINE=InnoDB;
 
 -- Seeds basicos de categorias

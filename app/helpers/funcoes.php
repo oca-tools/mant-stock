@@ -35,6 +35,64 @@ function url($caminho = '')
     return $base . '/' . $caminho;
 }
 
+function url_absoluta($caminho = '')
+{
+    $config = require __DIR__ . '/../config/config.php';
+    $basePublica = trim((string)($config['app']['url_publica'] ?? ''));
+    if ($basePublica === '') {
+        $esquema = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $basePublica = $esquema . '://' . $host;
+    }
+    return rtrim($basePublica, '/') . url($caminho);
+}
+
+function rota_atual()
+{
+    static $rota = null;
+    if ($rota !== null) {
+        return $rota;
+    }
+
+    $config = require __DIR__ . '/../config/config.php';
+    $base = rtrim((string)($config['app']['url_base'] ?? ''), '/');
+    $base = preg_replace('/^\xEF\xBB\xBF/', '', $base);
+
+    $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    $uri = preg_replace('#^/index\.php#', '', (string)$uri);
+    if ($base !== '' && strpos($uri, $base) === 0) {
+        $uri = substr($uri, strlen($base));
+    }
+    $rota = rtrim($uri, '/') ?: '/';
+    return $rota;
+}
+
+function rota_ativa($caminho)
+{
+    $caminho = '/' . ltrim((string)$caminho, '/');
+    $caminho = rtrim($caminho, '/') ?: '/';
+    return rota_atual() === $caminho;
+}
+
+function rota_comeca_com($prefixos)
+{
+    $rota = rota_atual();
+    foreach ((array)$prefixos as $prefixo) {
+        $prefixo = '/' . ltrim((string)$prefixo, '/');
+        $prefixo = rtrim($prefixo, '/') ?: '/';
+        if ($prefixo === '/') {
+            if ($rota === '/') {
+                return true;
+            }
+            continue;
+        }
+        if (strpos($rota, $prefixo) === 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function csrf_token()
 {
     if (empty($_SESSION['csrf_token'])) {

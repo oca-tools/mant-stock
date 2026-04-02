@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Modelo base com utilitarios de banco
 abstract class ModeloBase
 {
