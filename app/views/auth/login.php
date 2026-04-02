@@ -2,7 +2,7 @@
 <section class="login-shell">
     <aside class="login-hero">
         <div>
-            <img src="<?php echo url('img/logo-grand-oca.png'); ?>" alt="Grand Oca Maragogi Resort" class="login-logo">
+            <img src="<?php echo asset_url('img/logo-grand-oca.png'); ?>" alt="Grand Oca Maragogi Resort" class="login-logo">
         </div>
         <div>
             <h1>Gestão Inteligente de Estoque da Manutenção</h1>

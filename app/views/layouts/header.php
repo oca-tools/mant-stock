@@ -1,20 +1,15 @@
 <?php $usuario = $_SESSION['usuario'] ?? null; ?>
 <?php $rotaAtual = rota_atual(); ?>
-<?php
-// Versao para evitar cache antigo do favicon no navegador
-$caminhoLogoFavicon = __DIR__ . '/../../../public/img/logo-grand-oca.png';
-$versaoFavicon = file_exists($caminhoLogoFavicon) ? (string)filemtime($caminhoLogoFavicon) : (string)time();
-?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo e(($titulo ?? 'Sistema de Estoque')); ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?php echo url('favicon.svg?v=' . $versaoFavicon); ?>">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo url('favicon.png?v=' . $versaoFavicon); ?>">
-    <link rel="shortcut icon" type="image/png" href="<?php echo url('favicon.png?v=' . $versaoFavicon); ?>">
-    <link rel="apple-touch-icon" href="<?php echo url('favicon.png?v=' . $versaoFavicon); ?>">
+    <link rel="icon" type="image/svg+xml" href="<?php echo asset_url('favicon.svg'); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo asset_url('favicon.png'); ?>">
+    <link rel="shortcut icon" type="image/png" href="<?php echo asset_url('favicon.png'); ?>">
+    <link rel="apple-touch-icon" href="<?php echo asset_url('favicon.png'); ?>">
     <meta name="theme-color" content="#101826">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +31,7 @@ $versaoFavicon = file_exists($caminhoLogoFavicon) ? (string)filemtime($caminhoLo
     <aside class="app-sidebar" id="app-sidebar">
         <div class="sidebar-brand">
             <div class="brand-logo-wrap">
-                <img src="<?php echo url('img/logo-grand-oca.png'); ?>" alt="Grand Oca Maragogi Resort" class="brand-logo" loading="lazy">
+                <img src="<?php echo asset_url('img/logo-grand-oca.png'); ?>" alt="Grand Oca Maragogi Resort" class="brand-logo" loading="lazy">
             </div>
             <div class="brand-meta">
                 <div class="brand-title">OCA MantStock</div>

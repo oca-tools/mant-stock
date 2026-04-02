@@ -35,6 +35,15 @@ function url($caminho = '')
     return $base . '/' . $caminho;
 }
 
+function asset_url($caminho = '')
+{
+    $caminho = ltrim((string)$caminho, '/');
+    $arquivoFisico = __DIR__ . '/../../public/' . $caminho;
+    $versao = file_exists($arquivoFisico) ? (string)filemtime($arquivoFisico) : (string)time();
+    $separador = (strpos($caminho, '?') !== false) ? '&' : '?';
+    return url($caminho . $separador . 'v=' . $versao);
+}
+
 function url_absoluta($caminho = '')
 {
     $config = require __DIR__ . '/../config/config.php';
