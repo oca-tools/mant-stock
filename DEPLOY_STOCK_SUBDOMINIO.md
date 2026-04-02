@@ -30,6 +30,14 @@ Enviar para o servidor:
 - `README.md`
 - `DEPLOY_STOCK_SUBDOMINIO.md`
 
+Opcional (gerar pacote zip pronto para upload):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/empacotar_deploy.ps1
+```
+
+O zip sera criado em `build/`.
+
 ## 3) Banco de dados
 
 1. Criar banco MySQL para o subdominio.
