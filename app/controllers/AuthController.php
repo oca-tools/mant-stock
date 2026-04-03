@@ -31,7 +31,9 @@ class AuthController extends ControllerBase
             'id' => $usuario['id'],
             'nome' => $usuario['nome'],
             'email' => $usuario['email'],
-            'tipo_usuario' => $usuario['tipo_usuario']
+            'tipo_usuario' => $usuario['tipo_usuario'],
+            'lgpd_aceite_at' => $usuario['lgpd_aceite_at'] ?? null,
+            'lgpd_aceite_versao' => $usuario['lgpd_aceite_versao'] ?? null
         ];
 
         LogService::registrar($usuario['id'], 'login', 'Usuario efetuou login', 'usuarios', $usuario['id']);

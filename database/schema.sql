@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS usuarios (
     tipo_usuario ENUM('Administrador', 'Almoxarifado', 'Consulta') NOT NULL,
     ativo TINYINT(1) NOT NULL DEFAULT 1,
     created_at DATETIME NOT NULL,
+    lgpd_aceite_at DATETIME NULL,
+    lgpd_aceite_ip VARCHAR(45) NULL,
+    lgpd_aceite_versao VARCHAR(30) NULL,
     INDEX idx_usuarios_email (email)
 ) ENGINE=InnoDB;
 
@@ -157,6 +160,27 @@ CREATE TABLE IF NOT EXISTS logs (
     dados_depois JSON NULL,
     data_log DATETIME NOT NULL,
     CONSTRAINT fk_logs_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS solicitacoes_lgpd (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    protocolo VARCHAR(40) NOT NULL UNIQUE,
+    titular_nome VARCHAR(120) NOT NULL,
+    titular_email VARCHAR(120) NOT NULL,
+    tipo_solicitacao ENUM('acesso','correcao','anonimizacao','eliminacao','portabilidade','oposicao','revogacao') NOT NULL,
+    descricao TEXT NOT NULL,
+    status ENUM('aberta','em_analise','concluida','indeferida') NOT NULL DEFAULT 'aberta',
+    resposta TEXT NULL,
+    usuario_abertura_id INT NOT NULL,
+    usuario_responsavel_id INT NULL,
+    data_abertura DATETIME NOT NULL,
+    data_atualizacao DATETIME NOT NULL,
+    data_conclusao DATETIME NULL,
+    CONSTRAINT fk_sol_lgpd_abertura FOREIGN KEY (usuario_abertura_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_sol_lgpd_responsavel FOREIGN KEY (usuario_responsavel_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE SET NULL,
+    INDEX idx_sol_lgpd_email (titular_email),
+    INDEX idx_sol_lgpd_status (status),
+    INDEX idx_sol_lgpd_data_abertura (data_abertura)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS convites_usuarios (

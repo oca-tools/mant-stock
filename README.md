@@ -40,6 +40,20 @@ Sistema web em PHP 8+ para controle de estoque do setor de manutencao de um reso
 - `modo_teste = true` grava os e-mails em log sem tentar envio real.
 - `modo_teste = false` usa a funcao nativa `mail()` do PHP (depende da configuracao de SMTP no servidor).
 
+## Adequacao LGPD
+- O sistema possui aceite obrigatorio de politica de privacidade por usuario autenticado.
+- Cada aceite registra data/hora, IP e versao da politica aplicada.
+- Ha modulo administrativo para registrar e acompanhar solicitacoes de titulares em `/lgpd/solicitacoes`.
+- Para base antiga, execute: `database/migrations/20260403_lgpd_base.sql`.
+- Parametros de configuracao em `app/config/config.php`:
+  - `lgpd.versao_politica`
+  - `lgpd.exigir_aceite`
+  - `lgpd.email_encarregado`
+  - `lgpd.retencao_logs_dias`
+  - `lgpd.anonimizacao_logs_dias`
+- Script de rotina para minimizacao/retencao:
+  - `php scripts/rotina_lgpd_retencao.php`
+
 ## Auditoria operacional e comprovante de saida
 - Entradas, saidas, cadastro de ferramentas e emprestimos/devolucoes exigem senha de confirmacao do usuario logado.
 - Toda saida gera comprovante imprimivel em `/saidas/comprovante/{id}` com campo de assinatura do solicitante.

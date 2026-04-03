@@ -10,6 +10,9 @@ return [
     ['metodo' => 'POST', 'caminho' => '/logout', 'acao' => ['AuthController', 'logout'], 'opcoes' => ['auth' => true]],
     ['metodo' => 'GET', 'caminho' => '/cadastro/aceitar', 'acao' => ['CadastroController', 'formAceite'], 'opcoes' => []],
     ['metodo' => 'POST', 'caminho' => '/cadastro/aceitar', 'acao' => ['CadastroController', 'concluirCadastro'], 'opcoes' => []],
+    ['metodo' => 'GET', 'caminho' => '/lgpd/politica', 'acao' => ['LgpdController', 'politica'], 'opcoes' => []],
+    ['metodo' => 'GET', 'caminho' => '/lgpd/aceite', 'acao' => ['LgpdController', 'formAceite'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
+    ['metodo' => 'POST', 'caminho' => '/lgpd/aceite', 'acao' => ['LgpdController', 'aceitar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
 
     ['metodo' => 'GET', 'caminho' => '/dashboard', 'acao' => ['DashboardController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
     ['metodo' => 'GET', 'caminho' => '/estoque', 'acao' => ['EstoqueController', 'index'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador', 'Almoxarifado', 'Consulta']]],
@@ -79,5 +82,9 @@ return [
     ['metodo' => 'POST', 'caminho' => '/usuarios/convites', 'acao' => ['UsuariosController', 'enviarConvite'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
     ['metodo' => 'GET', 'caminho' => '/usuarios/editar/{id}', 'acao' => ['UsuariosController', 'editar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
     ['metodo' => 'POST', 'caminho' => '/usuarios/editar/{id}', 'acao' => ['UsuariosController', 'atualizar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
-    ['metodo' => 'POST', 'caminho' => '/usuarios/desativar/{id}', 'acao' => ['UsuariosController', 'desativar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]]
+    ['metodo' => 'POST', 'caminho' => '/usuarios/desativar/{id}', 'acao' => ['UsuariosController', 'desativar'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
+
+    ['metodo' => 'GET', 'caminho' => '/lgpd/solicitacoes', 'acao' => ['LgpdController', 'solicitacoes'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
+    ['metodo' => 'POST', 'caminho' => '/lgpd/solicitacoes', 'acao' => ['LgpdController', 'criarSolicitacao'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]],
+    ['metodo' => 'POST', 'caminho' => '/lgpd/solicitacoes/atualizar/{id}', 'acao' => ['LgpdController', 'atualizarSolicitacao'], 'opcoes' => ['auth' => true, 'tipos' => ['Administrador']]]
 ];

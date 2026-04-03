@@ -43,6 +43,7 @@ O zip sera criado em `build/`.
 1. Criar banco MySQL para o subdominio.
 2. Importar `database/schema.sql`.
 3. Se necessario, aplicar migracoes em `database/migrations/`.
+   - Para adequacao LGPD em base antiga, execute: `database/migrations/20260403_lgpd_base.sql`.
 4. Criar usuario administrador:
    - executar `php database/seeds/seed_usuarios.php` (via SSH), ou criar manualmente no banco.
 
@@ -66,6 +67,11 @@ Defina no painel/servidor (ou no VirtualHost):
 - `MAIL_REMETENTE_EMAIL=nao-responda@stock.oca-tools.com.br`
 - `MAIL_REMETENTE_NOME=OCA MantStock`
 - `MAIL_MODO_TESTE=false`
+- `LGPD_VERSAO_POLITICA=2026-04`
+- `LGPD_EXIGIR_ACEITE=true`
+- `LGPD_EMAIL_ENCARREGADO=privacidade@oca-tools.com.br`
+- `LGPD_RETENCAO_LOGS_DIAS=365`
+- `LGPD_ANONIMIZACAO_LOGS_DIAS=90`
 
 Se nao puder usar variaveis de ambiente, edite `app/config/config.php` diretamente com os dados de producao.
 
@@ -95,6 +101,13 @@ Permissao tipica:
 4. Exportacoes (CSV/PDF) funcionam.
 5. Impressao de comprovante de saida funciona em 1 pagina.
 6. Favicon aparece no navegador.
+7. Fluxo de aceite LGPD e solicitacoes de titulares funcionando.
+
+Rotina recomendada (cron diario):
+
+```bash
+php /CAMINHO_DO_APP/scripts/rotina_lgpd_retencao.php
+```
 
 ## 8) Deploy paralelo com outros subdominios
 

@@ -98,6 +98,12 @@
                 <i class="bi bi-graph-up-arrow"></i>
                 <span>Relatórios</span>
             </a>
+            <?php if ($isAdmin): ?>
+                <a class="sidebar-link <?php echo rota_comeca_com('/lgpd') ? 'is-active' : ''; ?>" href="<?php echo url('lgpd/solicitacoes'); ?>">
+                    <i class="bi bi-shield-check"></i>
+                    <span>LGPD</span>
+                </a>
+            <?php endif; ?>
         </nav>
     </aside>
 

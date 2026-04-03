@@ -4,7 +4,7 @@ class Usuario extends ModeloBase
 {
     public function listar()
     {
-        return $this->db->query('SELECT id, nome, email, tipo_usuario, ativo, created_at FROM usuarios ORDER BY nome')->fetchAll();
+        return $this->db->query('SELECT id, nome, email, tipo_usuario, ativo, created_at, lgpd_aceite_at, lgpd_aceite_versao FROM usuarios ORDER BY nome')->fetchAll();
     }
 
     public function listarAtivosPorEmail($email)
@@ -57,6 +57,16 @@ class Usuario extends ModeloBase
             ':ativo' => $dados['ativo']
         ]);
         return $this->db->lastInsertId();
+    }
+
+    public function registrarAceiteLgpd($id, $versaoPolitica, $ip)
+    {
+        $stmt = $this->db->prepare('UPDATE usuarios SET lgpd_aceite_at = NOW(), lgpd_aceite_ip = :ip, lgpd_aceite_versao = :versao WHERE id = :id');
+        return $stmt->execute([
+            ':id' => $id,
+            ':ip' => $ip,
+            ':versao' => $versaoPolitica
+        ]);
     }
 
     public function senhaJaUtilizadaNoEmail($email, $senha, $ignorarUsuarioId = null)

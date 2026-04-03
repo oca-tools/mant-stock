@@ -15,6 +15,8 @@ class AuthMiddleware
         if (empty($_SESSION['usuario'])) {
             redirect(url('login'));
         }
+
+        self::validarAceiteLgpd($config);
     }
 
     public static function verificarAdmin()
@@ -36,5 +38,42 @@ class AuthMiddleware
             echo 'Acesso negado.';
             exit;
         }
+    }
+
+    private static function validarAceiteLgpd(array $config)
+    {
+        $configLgpd = $config['lgpd'] ?? [];
+        if (empty($configLgpd['exigir_aceite'])) {
+            return;
+        }
+
+        $rota = rota_atual();
+        $rotasPermitidas = ['/lgpd/aceite', '/lgpd/politica', '/logout'];
+        if (in_array($rota, $rotasPermitidas, true)) {
+            return;
+        }
+
+        $usuarioId = (int)($_SESSION['usuario']['id'] ?? 0);
+        if ($usuarioId <= 0) {
+            return;
+        }
+
+        // Recarrega os dados de aceite em toda requisicao para manter consistencia.
+        $usuarioModel = new Usuario();
+        $usuario = $usuarioModel->buscarPorId($usuarioId);
+        if ($usuario) {
+            $_SESSION['usuario']['lgpd_aceite_at'] = $usuario['lgpd_aceite_at'] ?? null;
+            $_SESSION['usuario']['lgpd_aceite_versao'] = $usuario['lgpd_aceite_versao'] ?? null;
+        }
+
+        $versaoAtual = (string)($configLgpd['versao_politica'] ?? '');
+        $aceiteAt = $_SESSION['usuario']['lgpd_aceite_at'] ?? null;
+        $aceiteVersao = (string)($_SESSION['usuario']['lgpd_aceite_versao'] ?? '');
+
+        if ($aceiteAt && $aceiteVersao !== '' && $aceiteVersao === $versaoAtual) {
+            return;
+        }
+
+        redirect(url('lgpd/aceite'));
     }
 }

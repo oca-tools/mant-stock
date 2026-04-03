@@ -3,6 +3,7 @@
 <?php $totalBaixo = count($estoqueBaixo); ?>
 <?php $totalMovimentacoes = count($movimentacoes); ?>
 <?php $totalDescartes = array_sum(array_map(static function ($item) { return (float)($item['total_descarte'] ?? 0); }, $maisDescartados)); ?>
+<?php $flashLgpd = flash_get('lgpd'); ?>
 
 <section class="page-header">
     <div>
@@ -17,6 +18,10 @@
         </div>
     <?php endif; ?>
 </section>
+
+<?php if ($flashLgpd): ?>
+    <div class="alert alert-<?php echo e($flashLgpd['tipo']); ?>"><?php echo e($flashLgpd['mensagem']); ?></div>
+<?php endif; ?>
 
 <div class="row g-3 mb-1">
     <div class="col-xl-3 col-sm-6">

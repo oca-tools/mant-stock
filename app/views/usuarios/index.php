@@ -1,17 +1,17 @@
-<?php $titulo = 'Usuários'; require __DIR__ . '/../layouts/header.php'; ?>
+<?php $titulo = 'Usuarios'; require __DIR__ . '/../layouts/header.php'; ?>
 <?php $flash = flash_get('usuarios'); ?>
 
 <section class="page-header">
     <div>
-        <h2 class="page-header__titulo">Usuários</h2>
-        <p class="page-header__subtitulo">Controle de acesso e cadastro por convite com rastreabilidade de quem convidou.</p>
+        <h2 class="page-header__titulo">Usuarios</h2>
+        <p class="page-header__subtitulo">Controle de acesso, aceite LGPD e cadastro por convite com rastreabilidade.</p>
     </div>
     <div class="page-header__acoes">
         <a class="btn btn-outline-primary" href="<?php echo url('usuarios/convites/novo'); ?>">
             <i class="bi bi-envelope-plus me-1"></i>Enviar Convite
         </a>
         <a class="btn btn-primary" href="<?php echo url('usuarios/criar'); ?>">
-            <i class="bi bi-person-plus me-1"></i>Novo Usuário
+            <i class="bi bi-person-plus me-1"></i>Novo Usuario
         </a>
     </div>
 </section>
@@ -31,17 +31,18 @@
                         <th>E-mail</th>
                         <th>Perfil</th>
                         <th>Status</th>
+                        <th>Aceite LGPD</th>
                         <th>Criado em</th>
-                        <th class="text-end">Ações</th>
+                        <th class="text-end">Acoes</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($usuarios)): ?>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 <div class="empty-state">
                                     <i class="bi bi-people"></i>
-                                    Nenhum usuário cadastrado.
+                                    Nenhum usuario cadastrado.
                                 </div>
                             </td>
                         </tr>
@@ -58,11 +59,19 @@
                                         <span class="status-pill status-pill--erro">Inativo</span>
                                     <?php endif; ?>
                                 </td>
+                                <td>
+                                    <?php if (!empty($usuario['lgpd_aceite_at'])): ?>
+                                        <span class="status-pill status-pill--ok">Aceito</span><br>
+                                        <small><?php echo e($usuario['lgpd_aceite_versao'] ?: '-'); ?></small>
+                                    <?php else: ?>
+                                        <span class="status-pill status-pill--alerta">Pendente</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?php echo e($usuario['created_at']); ?></td>
                                 <td class="text-end">
                                     <a class="btn btn-sm btn-outline-secondary" href="<?php echo url('usuarios/editar/' . $usuario['id']); ?>">Editar</a>
                                     <?php if ($usuario['ativo']): ?>
-                                        <form class="d-inline" method="POST" action="<?php echo url('usuarios/desativar/' . $usuario['id']); ?>" onsubmit="return confirm('Desativar usuário?');">
+                                        <form class="d-inline" method="POST" action="<?php echo url('usuarios/desativar/' . $usuario['id']); ?>" onsubmit="return confirm('Desativar usuario?');">
                                             <?php echo csrf_field(); ?>
                                             <button class="btn btn-sm btn-outline-danger" type="submit">Desativar</button>
                                         </form>
@@ -79,7 +88,7 @@
 
 <section class="panel">
     <div class="panel__body">
-        <h3 class="panel__titulo">Últimos convites enviados</h3>
+        <h3 class="panel__titulo">Ultimos convites enviados</h3>
         <div class="table-responsive">
             <table class="table align-middle">
                 <thead>
@@ -89,7 +98,7 @@
                         <th>Perfil</th>
                         <th>Status</th>
                         <th>Convidado por</th>
-                        <th>Criação</th>
+                        <th>Criacao</th>
                         <th>Expira em</th>
                         <th>Usado em</th>
                     </tr>
@@ -100,7 +109,7 @@
                             <td colspan="8">
                                 <div class="empty-state">
                                     <i class="bi bi-envelope"></i>
-                                    Nenhum convite enviado até o momento.
+                                    Nenhum convite enviado ate o momento.
                                 </div>
                             </td>
                         </tr>
