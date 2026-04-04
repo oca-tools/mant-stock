@@ -4,11 +4,21 @@ class AuthController extends ControllerBase
 {
     public function formLogin()
     {
+        // Evita exibir a tela de login para quem ja esta autenticado.
+        if (!empty($_SESSION['usuario']['id'])) {
+            redirect(url('dashboard'));
+        }
+
         $this->render('auth/login', ['erro' => null]);
     }
 
     public function login()
     {
+        // Se a sessao ja estiver ativa, mantem o usuario no painel.
+        if (!empty($_SESSION['usuario']['id'])) {
+            redirect(url('dashboard'));
+        }
+
         $this->exigirCsrf();
         $email = trim($_POST['email'] ?? '');
         $senha = $_POST['senha'] ?? '';
@@ -46,6 +56,13 @@ class AuthController extends ControllerBase
         $this->exigirCsrf();
         if (!empty($_SESSION['usuario']['id'])) {
             LogService::registrar($_SESSION['usuario']['id'], 'logout', 'Usuario efetuou logout', 'usuarios', $_SESSION['usuario']['id']);
+        }
+
+        // Limpa dados da sessao e invalida o cookie para evitar sessao "fantasma".
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'] ?? '', $params['secure'], $params['httponly']);
         }
         session_destroy();
         redirect(url('login'));
