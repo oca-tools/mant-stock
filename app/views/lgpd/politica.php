@@ -1,9 +1,9 @@
-<?php $titulo = 'Politica de Privacidade (LGPD)'; require __DIR__ . '/../layouts/header.php'; ?>
+<?php $titulo = 'Política de Privacidade (LGPD)'; require __DIR__ . '/../layouts/header.php'; ?>
 
 <section class="page-header">
     <div>
-        <h2 class="page-header__titulo">Politica de Privacidade e Tratamento de Dados</h2>
-        <p class="page-header__subtitulo">Diretrizes internas de uso de dados pessoais no sistema de estoque da manutencao.</p>
+        <h2 class="page-header__titulo">Política de Privacidade e Tratamento de Dados</h2>
+        <p class="page-header__subtitulo">Diretrizes internas de uso de dados pessoais no sistema de estoque da manutenção.</p>
     </div>
     <div class="page-header__acoes">
         <?php if (!empty($_SESSION['usuario'])): ?>
@@ -17,39 +17,39 @@
 <section class="panel">
     <div class="panel__body">
         <h3 class="panel__titulo">Resumo de conformidade LGPD</h3>
-        <p><strong>Versao da politica:</strong> <?php echo e($versaoPolitica); ?></p>
+        <p><strong>Versão da política:</strong> <?php echo e($versaoPolitica); ?></p>
         <p><strong>Canal de privacidade:</strong> <?php echo e($emailEncarregado); ?></p>
-        <p>Este sistema trata dados pessoais exclusivamente para operacao interna, auditoria, seguranca e rastreabilidade dos processos da manutencao.</p>
+        <p>Este sistema trata dados pessoais exclusivamente para operação interna, auditoria, segurança e rastreabilidade dos processos da manutenção.</p>
 
         <hr>
 
         <h4>Base legal e finalidade</h4>
         <ul>
-            <li>Controle de acesso e autenticacao de usuarios.</li>
-            <li>Registro de auditoria para prevencao de fraude e rastreabilidade.</li>
-            <li>Gestao operacional do estoque, entradas, saidas e inventarios.</li>
-            <li>Cumprimento de obrigacoes legais e reguladoras aplicaveis.</li>
+            <li>Controle de acesso e autenticação de usuários.</li>
+            <li>Registro de auditoria para prevenção de fraude e rastreabilidade.</li>
+            <li>Gestão operacional do estoque, entradas, saídas e inventários.</li>
+            <li>Cumprimento de obrigações legais e regulatórias aplicáveis.</li>
         </ul>
 
         <h4>Dados tratados</h4>
         <ul>
-            <li>Identificacao do colaborador: nome, e-mail, perfil e status.</li>
-            <li>Dados de autenticacao: hash de senha (senha em texto nunca e armazenada).</li>
-            <li>Registros de seguranca: data/hora, IP, user-agent e trilha de acoes.</li>
-            <li>Dados operacionais vinculados a movimentacoes de estoque.</li>
+            <li>Identificação do colaborador: nome, e-mail, perfil e status.</li>
+            <li>Dados de autenticação: hash de senha (senha em texto nunca é armazenada).</li>
+            <li>Registros de segurança: data/hora, IP, user-agent e trilha de ações.</li>
+            <li>Dados operacionais vinculados a movimentações de estoque.</li>
         </ul>
 
         <h4>Direitos do titular</h4>
-        <p>Solicitacoes de acesso, correcao, anonimizacao, eliminacao, portabilidade, oposicao e revogacao podem ser registradas no canal de privacidade.</p>
+        <p>Solicitações de acesso, correção, anonimização, eliminação, portabilidade, oposição e revogação podem ser registradas no canal de privacidade.</p>
 
-        <h4>Retencao e minimizacao</h4>
-        <p>Os registros sao mantidos pelo periodo necessario para auditoria e obrigacoes internas, com anonimizacao e exclusao conforme configuracao de retencao.</p>
+        <h4>Retenção e minimização</h4>
+        <p>Os registros são mantidos pelo período necessário para auditoria e obrigações internas, com anonimização e exclusão conforme configuração de retenção.</p>
 
-        <h4>Seguranca</h4>
+        <h4>Segurança</h4>
         <ul>
-            <li>Senha protegida com hash criptografico.</li>
-            <li>Sessao segura com expiraçao automatica.</li>
-            <li>Protecoes contra CSRF, XSS e SQL Injection.</li>
+            <li>Senha protegida com hash criptográfico.</li>
+            <li>Sessão segura com expiração automática.</li>
+            <li>Proteções contra CSRF, XSS e SQL Injection.</li>
             <li>Controle de acesso por perfil e trilha de auditoria.</li>
         </ul>
     </div>

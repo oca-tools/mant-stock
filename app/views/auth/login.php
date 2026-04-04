@@ -31,8 +31,8 @@
             </div>
             <button class="btn btn-primary" type="submit">Entrar</button>
         </form>
-        <p class="sub mt-3 mb-0">Nao possui acesso? Solicite um convite ao administrador.</p>
-        <p class="sub mt-2 mb-0">Privacidade: <a href="<?php echo url('lgpd/politica'); ?>" target="_blank" rel="noopener">consulte a politica LGPD</a>.</p>
+        <p class="sub mt-3 mb-0">Não possui acesso? Solicite um convite ao administrador.</p>
+        <p class="sub mt-2 mb-0">Privacidade: <a href="<?php echo url('lgpd/politica'); ?>" target="_blank" rel="noopener">consulte a política LGPD</a>.</p>
     </div>
 </section>
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
