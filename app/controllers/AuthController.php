@@ -22,6 +22,16 @@ class AuthController extends ControllerBase
         $this->exigirCsrf();
         $email = trim($_POST['email'] ?? '');
         $senha = $_POST['senha'] ?? '';
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $rateLimit = new RateLimitLoginService();
+        $status = $rateLimit->obterStatus($ip, $email);
+
+        if (!empty($status['bloqueado'])) {
+            $minutos = (int)ceil(((int)$status['segundos_restantes']) / 60);
+            $mensagem = 'Muitas tentativas de login. Aguarde ' . max($minutos, 1) . ' minuto(s) e tente novamente.';
+            $this->render('auth/login', ['erro' => $mensagem]);
+            return;
+        }
 
         if ($email === '' || $senha === '') {
             $this->render('auth/login', ['erro' => 'Informe email e senha.']);
@@ -32,9 +42,13 @@ class AuthController extends ControllerBase
         $usuario = $usuarioModel->autenticarPorEmailSenha($email, $senha);
 
         if (!$usuario) {
+            $rateLimit->registrarFalha($ip, $email);
             $this->render('auth/login', ['erro' => 'Credenciais invalidas.']);
             return;
         }
+
+        $rateLimit->registrarSucesso($ip, $email);
+        $rateLimit->limparExpirados();
 
         session_regenerate_id(true);
         $_SESSION['usuario'] = [
@@ -58,13 +72,7 @@ class AuthController extends ControllerBase
             LogService::registrar($_SESSION['usuario']['id'], 'logout', 'Usuario efetuou logout', 'usuarios', $_SESSION['usuario']['id']);
         }
 
-        // Limpa dados da sessao e invalida o cookie para evitar sessao "fantasma".
-        $_SESSION = [];
-        if (ini_get('session.use_cookies')) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'] ?? '', $params['secure'], $params['httponly']);
-        }
-        session_destroy();
+        encerrar_sessao_atual();
         redirect(url('login'));
     }
 }

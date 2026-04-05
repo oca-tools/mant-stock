@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+
+      - name: Lint PHP
+        run: |
+          find app public routes scripts database -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Guardrails
+        run: php scripts/validar_guardrails.php
+
+      - name: Testes Smoke
+        run: php scripts/testes_smoke.php

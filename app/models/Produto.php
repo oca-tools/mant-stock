@@ -85,6 +85,13 @@ class Produto extends ModeloBase
         return $stmt->fetch();
     }
 
+    public function buscarPorIdParaAtualizacao($id)
+    {
+        $stmt = $this->db->prepare('SELECT * FROM produtos WHERE id = :id LIMIT 1 FOR UPDATE');
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
     public function criar($dados)
     {
         $stmt = $this->db->prepare('INSERT INTO produtos (nome, categoria_id, codigo_interno, unidade_medida, estoque_atual, estoque_minimo, localizacao, observacoes, imagem, created_at, updated_at) VALUES (:nome, :categoria_id, :codigo_interno, :unidade_medida, :estoque_atual, :estoque_minimo, :localizacao, :observacoes, :imagem, NOW(), NOW())');
@@ -127,10 +134,31 @@ class Produto extends ModeloBase
 
     public function atualizarEstoque($id, $quantidade)
     {
+        return $this->incrementarEstoque($id, $quantidade);
+    }
+
+    public function incrementarEstoque($id, $quantidade)
+    {
         $stmt = $this->db->prepare('UPDATE produtos SET estoque_atual = estoque_atual + :quantidade, updated_at = NOW() WHERE id = :id');
-        return $stmt->execute([
+        $stmt->execute([
             ':quantidade' => $quantidade,
             ':id' => $id
         ]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function debitarEstoqueSemNegativo($id, $quantidade)
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE produtos
+             SET estoque_atual = estoque_atual - :quantidade, updated_at = NOW()
+             WHERE id = :id
+               AND estoque_atual >= :quantidade'
+        );
+        $stmt->execute([
+            ':quantidade' => $quantidade,
+            ':id' => $id
+        ]);
+        return $stmt->rowCount() > 0;
     }
 }

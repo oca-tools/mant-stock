@@ -50,7 +50,10 @@ function url_absoluta($caminho = '')
     $basePublica = trim((string)($config['app']['url_publica'] ?? ''));
     if ($basePublica === '') {
         $esquema = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $host = preg_replace('/[^A-Za-z0-9\.\-:]/', '', (string)($_SERVER['HTTP_HOST'] ?? 'localhost'));
+        if ($host === '') {
+            $host = 'localhost';
+        }
         $basePublica = $esquema . '://' . $host;
     }
     return rtrim($basePublica, '/') . url($caminho);
@@ -138,6 +141,24 @@ function flash_get($chave)
         return $dado;
     }
     return null;
+}
+
+function encerrar_sessao_atual()
+{
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params['path'] ?? '/',
+            $params['domain'] ?? '',
+            !empty($params['secure']),
+            !empty($params['httponly'])
+        );
+    }
+    session_destroy();
 }
 
 function estoque_baixo_count()

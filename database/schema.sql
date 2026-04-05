@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     imagem VARCHAR(200) NULL,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
+    INDEX idx_produtos_nome_codigo (nome, codigo_interno),
     CONSTRAINT fk_produtos_categoria FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
@@ -48,6 +49,8 @@ CREATE TABLE IF NOT EXISTS movimentacoes (
     destino VARCHAR(150) NULL,
     observacoes VARCHAR(255) NULL,
     data_movimentacao DATETIME NOT NULL,
+    INDEX idx_mov_data_tipo_produto (data_movimentacao, tipo_movimentacao, produto_id),
+    INDEX idx_mov_produto_data (produto_id, data_movimentacao),
     CONSTRAINT fk_mov_produto FOREIGN KEY (produto_id) REFERENCES produtos(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_mov_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
@@ -61,6 +64,7 @@ CREATE TABLE IF NOT EXISTS entradas (
     usuario_id INT NOT NULL,
     data_entrada DATETIME NOT NULL,
     observacoes VARCHAR(255) NULL,
+    INDEX idx_entradas_data_produto (data_entrada, produto_id),
     CONSTRAINT fk_ent_produto FOREIGN KEY (produto_id) REFERENCES produtos(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_ent_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
@@ -75,6 +79,7 @@ CREATE TABLE IF NOT EXISTS saidas (
     usuario_id INT NOT NULL,
     data_saida DATETIME NOT NULL,
     observacoes VARCHAR(255) NULL,
+    INDEX idx_saidas_data_produto (data_saida, produto_id),
     CONSTRAINT fk_sai_produto FOREIGN KEY (produto_id) REFERENCES produtos(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_sai_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
@@ -159,7 +164,19 @@ CREATE TABLE IF NOT EXISTS logs (
     dados_antes JSON NULL,
     dados_depois JSON NULL,
     data_log DATETIME NOT NULL,
+    INDEX idx_logs_data_acao (data_log, acao),
     CONSTRAINT fk_logs_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS tentativas_login (
+    chave CHAR(64) PRIMARY KEY,
+    ip VARCHAR(45) NOT NULL,
+    email VARCHAR(120) NOT NULL,
+    tentativas INT NOT NULL DEFAULT 0,
+    bloqueado_ate DATETIME NULL,
+    ultimo_evento DATETIME NOT NULL,
+    INDEX idx_tentativas_login_ultimo_evento (ultimo_evento),
+    INDEX idx_tentativas_login_bloqueado (bloqueado_ate)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS solicitacoes_lgpd (

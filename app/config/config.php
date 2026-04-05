@@ -25,12 +25,16 @@ $toInt = static function ($valor, int $padrao): int {
     return $padrao;
 };
 
+$ambiente = strtolower((string)$lerAmbiente('APP_AMBIENTE', 'local'));
+$forcarHttpsPadrao = in_array($ambiente, ['producao', 'production', 'staging'], true);
+
 return [
     'app' => [
+        'ambiente' => $ambiente,
         'nome' => (string)$lerAmbiente('APP_NOME', 'Controle de Estoque - Manutencao'),
         'url_base' => (string)$lerAmbiente('APP_URL_BASE', '/'),
         'url_publica' => (string)$lerAmbiente('APP_URL_PUBLICA', 'http://localhost'),
-        'forcar_https' => $toBool($lerAmbiente('APP_FORCAR_HTTPS', false), false),
+        'forcar_https' => $toBool($lerAmbiente('APP_FORCAR_HTTPS', $forcarHttpsPadrao), $forcarHttpsPadrao),
         'upload_max_mb' => $toInt($lerAmbiente('APP_UPLOAD_MAX_MB', 2), 2)
     ],
     'db' => [
@@ -42,7 +46,8 @@ return [
     ],
     'sessao' => [
         'nome' => (string)$lerAmbiente('SESSAO_NOME', 'sessao_estoque'),
-        'expiracao' => $toInt($lerAmbiente('SESSAO_EXPIRACAO', 7200), 7200)
+        'expiracao' => $toInt($lerAmbiente('SESSAO_EXPIRACAO', 7200), 7200),
+        'samesite' => (string)$lerAmbiente('SESSAO_SAMESITE', 'Lax')
     ],
     'mail' => [
         'remetente_email' => (string)$lerAmbiente('MAIL_REMETENTE_EMAIL', 'nao-responda@oca-mantstock.local'),

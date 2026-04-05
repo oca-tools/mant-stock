@@ -8,7 +8,7 @@ class ConviteUsuario extends ModeloBase
             'INSERT INTO convites_usuarios
                 (email, nome_sugerido, tipo_usuario, token_hash, status, usuario_convite_id, expira_em, criado_em)
              VALUES
-                (:email, :nome_sugerido, :tipo_usuario, :token_hash, "pendente", :usuario_convite_id, :expira_em, NOW())'
+                (:email, :nome_sugerido, :tipo_usuario, :token_hash, \'pendente\', :usuario_convite_id, :expira_em, NOW())'
         );
         $stmt->execute([
             ':email' => $dados['email'],
@@ -42,10 +42,27 @@ class ConviteUsuario extends ModeloBase
             'SELECT *
              FROM convites_usuarios
              WHERE token_hash = :token_hash
-               AND status = "pendente"
+               AND status = \'pendente\'
                AND usado_em IS NULL
                AND expira_em >= NOW()
              LIMIT 1'
+        );
+        $stmt->execute([':token_hash' => $tokenHash]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function buscarValidoPorTokenComBloqueio($token)
+    {
+        $tokenHash = hash('sha256', $token);
+        $stmt = $this->db->prepare(
+            'SELECT *
+             FROM convites_usuarios
+             WHERE token_hash = :token_hash
+               AND status = \'pendente\'
+               AND usado_em IS NULL
+               AND expira_em >= NOW()
+             LIMIT 1
+             FOR UPDATE'
         );
         $stmt->execute([':token_hash' => $tokenHash]);
         return $stmt->fetch() ?: null;
@@ -55,15 +72,18 @@ class ConviteUsuario extends ModeloBase
     {
         $stmt = $this->db->prepare(
             'UPDATE convites_usuarios
-             SET status = "aceito",
+             SET status = \'aceito\',
                  usuario_criado_id = :usuario_criado_id,
                  usado_em = NOW()
              WHERE id = :id
-               AND status = "pendente"'
+               AND status = \'pendente\'
+               AND usado_em IS NULL
+               AND expira_em >= NOW()'
         );
-        return $stmt->execute([
+        $stmt->execute([
             ':usuario_criado_id' => $usuarioCriadoId,
             ':id' => $id
         ]);
+        return $stmt->rowCount() > 0;
     }
 }

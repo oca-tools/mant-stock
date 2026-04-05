@@ -75,9 +75,19 @@ class SolicitacaoLgpd extends ModeloBase
 
     private function gerarProtocolo()
     {
+        $hoje = date('Y-m-d');
+        $amanha = date('Y-m-d', strtotime($hoje . ' +1 day'));
         $base = 'LGPD-' . date('Ymd') . '-';
-        $stmt = $this->db->prepare('SELECT COUNT(*) AS total FROM solicitacoes_lgpd WHERE DATE(data_abertura) = CURDATE()');
-        $stmt->execute();
+        $stmt = $this->db->prepare(
+            'SELECT COUNT(*) AS total
+             FROM solicitacoes_lgpd
+             WHERE data_abertura >= :inicio
+               AND data_abertura < :fim'
+        );
+        $stmt->execute([
+            ':inicio' => $hoje . ' 00:00:00',
+            ':fim' => $amanha . ' 00:00:00'
+        ]);
         $linha = $stmt->fetch();
         $sequencia = ((int)($linha['total'] ?? 0)) + 1;
         return $base . str_pad((string)$sequencia, 4, '0', STR_PAD_LEFT);

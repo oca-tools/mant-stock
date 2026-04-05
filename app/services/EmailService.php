@@ -15,14 +15,14 @@ class EmailService
         $nomeExibicao = $nomeSugerido !== '' ? $nomeSugerido : 'colaborador(a)';
 
         $corpoHtml = '<html><body style="font-family:Arial,sans-serif;color:#1f2937;">'
-            . '<h2>Cadastro de usuário - OCA MantStock</h2>'
-            . '<p>Olá, ' . e($nomeExibicao) . '.</p>'
-            . '<p>Você recebeu um convite para criar sua conta no sistema de estoque da manutenção.</p>'
+            . '<h2>Cadastro de usuario - OCA MantStock</h2>'
+            . '<p>Ola, ' . e($nomeExibicao) . '.</p>'
+            . '<p>Voce recebeu um convite para criar sua conta no sistema de estoque da manutencao.</p>'
             . '<p><strong>Perfil de acesso:</strong> ' . e($tipoUsuario) . '</p>'
             . '<p><a href="' . e($linkAceite) . '" style="display:inline-block;padding:10px 16px;background:#1d5ca7;color:#fff;text-decoration:none;border-radius:8px;">Criar minha conta</a></p>'
-            . '<p>Se o botão não abrir, copie este link no navegador:</p>'
+            . '<p>Se o botao nao abrir, copie este link no navegador:</p>'
             . '<p>' . e($linkAceite) . '</p>'
-            . '<p style="color:#6b7280;">Mensagem automática. Não responda este e-mail.</p>'
+            . '<p style="color:#6b7280;">Mensagem automatica. Nao responda este e-mail.</p>'
             . '</body></html>';
 
         $cabecalhos = [];
@@ -31,10 +31,11 @@ class EmailService
         $cabecalhos[] = 'From: ' . $remetenteNome . ' <' . $remetenteEmail . '>';
 
         if ($modoTeste) {
-            self::registrarEmLog($emailDestino, $assunto, $corpoHtml);
+            self::registrarEmLog($emailDestino, $assunto, true, $linkAceite);
             return [
                 'sucesso' => true,
-                'mensagem' => 'Modo teste ativo: e-mail gravado em logs/emails.log.'
+                'mensagem' => 'Modo teste ativo: evento de envio registrado em logs/emails.log.',
+                'link_preview' => $linkAceite
             ];
         }
 
@@ -46,20 +47,23 @@ class EmailService
             ];
         }
 
-        self::registrarEmLog($emailDestino, $assunto, $corpoHtml);
+        self::registrarEmLog($emailDestino, $assunto, false, $linkAceite);
         return [
             'sucesso' => false,
-            'mensagem' => 'Falha no envio automático. O conteúdo foi salvo em logs/emails.log.'
+            'mensagem' => 'Falha no envio automatico. Verifique as configuracoes de e-mail e gere um novo convite.'
         ];
     }
 
-    private static function registrarEmLog($emailDestino, $assunto, $corpoHtml)
+    private static function registrarEmLog($emailDestino, $assunto, $modoTeste, $linkAceite)
     {
+        $hostLink = parse_url((string)$linkAceite, PHP_URL_HOST) ?: '';
+        $hashLink = hash('sha256', (string)$linkAceite);
         $linha = '[' . date('Y-m-d H:i:s') . ']'
             . ' PARA=' . $emailDestino
             . ' | ASSUNTO=' . $assunto
-            . PHP_EOL
-            . $corpoHtml
+            . ' | MODO_TESTE=' . ($modoTeste ? '1' : '0')
+            . ' | HOST_LINK=' . $hostLink
+            . ' | HASH_LINK=' . $hashLink
             . PHP_EOL
             . str_repeat('-', 80)
             . PHP_EOL;

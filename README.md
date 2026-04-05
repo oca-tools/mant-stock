@@ -12,6 +12,7 @@ Sistema web em PHP 8+ para controle de estoque do setor de manutencao de um reso
 1. Crie o banco e tabelas com `database/schema.sql`.
 2. Ajuste as credenciais em `app/config/config.php`.
 3. Gere o usuario administrador com o seed: `php database/seeds/seed_usuarios.php`.
+   - Opcionalmente, defina `SEED_ADMIN_EMAIL` e `SEED_ADMIN_SENHA` antes de executar.
 4. Acesse `/login` e utilize o usuario criado.
 
 ## Deploy no subdominio stock.oca-tools.com.br
@@ -33,7 +34,7 @@ Sistema web em PHP 8+ para controle de estoque do setor de manutencao de um reso
 - O colaborador recebe link para `cadastro/aceitar` e cria a propria conta.
 - O sistema permite mais de uma conta por e-mail, desde que a senha seja diferente.
 - Para base antiga, execute a migracao: `database/migrations/20260401_convites_usuarios.sql`.
-- Se o envio automatico falhar, o sistema grava o conteudo em `logs/emails.log`.
+- Se o envio automatico falhar, o sistema registra somente metadados de auditoria em `logs/emails.log` (sem token em texto puro).
 
 ## Configuracao de e-mail
 - Ajuste `mail.remetente_email` e `mail.remetente_nome` em `app/config/config.php`.
@@ -59,6 +60,18 @@ Sistema web em PHP 8+ para controle de estoque do setor de manutencao de um reso
 - Toda saida gera comprovante imprimivel em `/saidas/comprovante/{id}` com campo de assinatura do solicitante.
 - As listagens de entradas, saidas, movimentacoes, ferramentas e emprestimos usam paginacao de 20 registros por pagina.
 - Para base antiga, execute a migracao: `database/migrations/20260401_auditoria_operacoes.sql`.
+
+## Seguranca e performance (recomendado)
+- Execute a migracao: `database/migrations/20260404_seguranca_performance.sql`.
+- Essa migracao adiciona:
+  - tabela de rate-limit de login (`tentativas_login`)
+  - indices para relatorios e consultas de movimentacao
+- Em producao, mantenha `APP_FORCAR_HTTPS=true`.
+
+## CI e guardrails
+- Script de guardrails: `php scripts/validar_guardrails.php`.
+- Testes smoke: `php scripts/testes_smoke.php`.
+- Pipeline GitHub Actions: `.github/workflows/ci.yml`.
 
 ## Observacoes
 - O exportador de Excel gera um CSV.

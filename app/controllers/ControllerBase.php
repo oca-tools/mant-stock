@@ -48,13 +48,29 @@ abstract class ControllerBase
         // BOM UTF-8 para compatibilidade com Excel
         fwrite($saida, "\xEF\xBB\xBF");
         if (!empty($cabecalho)) {
-            fputcsv($saida, $cabecalho, ';');
+            fputcsv($saida, array_map([$this, 'sanitizarCelulaCsv'], $cabecalho), ';');
         }
         foreach ($linhas as $linha) {
-            fputcsv($saida, $linha, ';');
+            $linhaSegura = array_map([$this, 'sanitizarCelulaCsv'], (array)$linha);
+            fputcsv($saida, $linhaSegura, ';');
         }
         fclose($saida);
         exit;
+    }
+
+    protected function sanitizarCelulaCsv($valor)
+    {
+        $texto = (string)$valor;
+        if ($texto === '') {
+            return $texto;
+        }
+
+        // Evita execucao de formulas quando o CSV e aberto em planilhas.
+        if (preg_match('/^[=\+\-@]/', $texto) === 1) {
+            return "'" . $texto;
+        }
+
+        return $texto;
     }
 
     // Exporta uma tabela em HTML e aciona impressao para gerar PDF

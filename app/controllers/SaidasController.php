@@ -122,14 +122,6 @@ class SaidasController extends ControllerBase
         }
 
         $produtoModel = new Produto();
-        $produto = $produtoModel->buscarPorId($produtoId);
-        if (!$produto || $produto['estoque_atual'] < $quantidade) {
-            $produtos = $produtoModel->listar(500, 0, '');
-            $this->render('saidas/criar', ['produtos' => $produtos, 'erro' => 'Estoque insuficiente para a saida.']);
-            return;
-        }
-
-        $saidaModel = new Saida();
         $dadosSaida = [
             'produto_id' => $produtoId,
             'quantidade' => $quantidade,
@@ -139,12 +131,7 @@ class SaidasController extends ControllerBase
             'usuario_id' => $_SESSION['usuario']['id'],
             'observacoes' => trim($_POST['observacoes'] ?? '')
         ];
-        $saidaId = $saidaModel->criar($dadosSaida);
-
-        $produtoModel->atualizarEstoque($produtoId, -$quantidade);
-
-        $movModel = new Movimentacao();
-        $movModel->criar([
+        $dadosMovimentacao = [
             'produto_id' => $produtoId,
             'tipo_movimentacao' => 'saida',
             'quantidade' => $quantidade,
@@ -152,7 +139,21 @@ class SaidasController extends ControllerBase
             'origem' => 'Almoxarifado',
             'destino' => trim($_POST['local_utilizacao'] ?? ''),
             'observacoes' => trim($_POST['observacoes'] ?? '')
-        ]);
+        ];
+
+        try {
+            $service = new OperacaoEstoqueService();
+            $resultado = $service->registrarSaida($dadosSaida, $dadosMovimentacao);
+            $saidaId = (int)$resultado['saida_id'];
+        } catch (DomainException $erroDominio) {
+            $produtos = $produtoModel->listar(500, 0, '');
+            $this->render('saidas/criar', ['produtos' => $produtos, 'erro' => $erroDominio->getMessage()]);
+            return;
+        } catch (Throwable $erro) {
+            $produtos = $produtoModel->listar(500, 0, '');
+            $this->render('saidas/criar', ['produtos' => $produtos, 'erro' => 'Nao foi possivel registrar a saida. Tente novamente.']);
+            return;
+        }
 
         LogService::registrar(
             $_SESSION['usuario']['id'],

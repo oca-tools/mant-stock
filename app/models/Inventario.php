@@ -34,7 +34,7 @@ class Inventario extends ModeloBase
             'INSERT INTO inventarios_mensais
                 (competencia, status, observacoes_abertura, usuario_abertura_id, data_abertura)
              VALUES
-                (:competencia, "aberto", :observacoes_abertura, :usuario_abertura_id, NOW())'
+                (:competencia, \'aberto\', :observacoes_abertura, :usuario_abertura_id, NOW())'
         );
         $stmt->execute([
             ':competencia' => $competencia,
@@ -113,51 +113,21 @@ class Inventario extends ModeloBase
 
     public function salvarContagem($dados)
     {
-        $stmt = $this->db->prepare(
-            'SELECT id
-             FROM inventarios
-             WHERE inventario_mensal_id = :inventario_mensal_id
-               AND produto_id = :produto_id
-             LIMIT 1'
-        );
-        $stmt->execute([
-            ':inventario_mensal_id' => $dados['inventario_mensal_id'],
-            ':produto_id' => $dados['produto_id']
-        ]);
-        $existente = $stmt->fetch();
-
-        if ($existente) {
-            $stmtAtualizar = $this->db->prepare(
-                'UPDATE inventarios
-                 SET quantidade_sistema = :quantidade_sistema,
-                     quantidade_real = :quantidade_real,
-                     diferenca = :diferenca,
-                     usuario_id = :usuario_id,
-                     motivo_ajuste = :motivo_ajuste,
-                     ajuste_aplicado = 0,
-                     data_ajuste = NULL,
-                     data_inventario = NOW()
-                 WHERE id = :id'
-            );
-            $stmtAtualizar->execute([
-                ':quantidade_sistema' => $dados['quantidade_sistema'],
-                ':quantidade_real' => $dados['quantidade_real'],
-                ':diferenca' => $dados['diferenca'],
-                ':usuario_id' => $dados['usuario_id'],
-                ':motivo_ajuste' => $dados['motivo_ajuste'],
-                ':id' => $existente['id']
-            ]);
-            return [
-                'id' => (int)$existente['id'],
-                'atualizado' => true
-            ];
-        }
-
         $stmtInserir = $this->db->prepare(
             'INSERT INTO inventarios
                 (inventario_mensal_id, produto_id, quantidade_sistema, quantidade_real, diferenca, usuario_id, motivo_ajuste, ajuste_aplicado, data_inventario)
              VALUES
-                (:inventario_mensal_id, :produto_id, :quantidade_sistema, :quantidade_real, :diferenca, :usuario_id, :motivo_ajuste, 0, NOW())'
+                (:inventario_mensal_id, :produto_id, :quantidade_sistema, :quantidade_real, :diferenca, :usuario_id, :motivo_ajuste, 0, NOW())
+             ON DUPLICATE KEY UPDATE
+                id = LAST_INSERT_ID(id),
+                quantidade_sistema = VALUES(quantidade_sistema),
+                quantidade_real = VALUES(quantidade_real),
+                diferenca = VALUES(diferenca),
+                usuario_id = VALUES(usuario_id),
+                motivo_ajuste = VALUES(motivo_ajuste),
+                ajuste_aplicado = 0,
+                data_ajuste = NULL,
+                data_inventario = NOW()'
         );
         $stmtInserir->execute([
             ':inventario_mensal_id' => $dados['inventario_mensal_id'],
@@ -168,9 +138,12 @@ class Inventario extends ModeloBase
             ':usuario_id' => $dados['usuario_id'],
             ':motivo_ajuste' => $dados['motivo_ajuste']
         ]);
+
+        $id = (int)$this->db->lastInsertId();
+        $atualizado = $stmtInserir->rowCount() !== 1;
         return [
-            'id' => (int)$this->db->lastInsertId(),
-            'atualizado' => false
+            'id' => $id,
+            'atualizado' => $atualizado
         ];
     }
 
@@ -214,12 +187,12 @@ class Inventario extends ModeloBase
     {
         $stmt = $this->db->prepare(
             'UPDATE inventarios_mensais
-             SET status = "fechado",
+             SET status = \'fechado\',
                  usuario_fechamento_id = :usuario_fechamento_id,
                  observacoes_fechamento = :observacoes_fechamento,
                  data_fechamento = NOW()
              WHERE id = :id
-               AND status = "aberto"'
+               AND status = \'aberto\''
         );
         $stmt->execute([
             ':usuario_fechamento_id' => $usuarioId,

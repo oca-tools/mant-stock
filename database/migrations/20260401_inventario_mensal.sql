@@ -17,10 +17,44 @@ CREATE TABLE IF NOT EXISTS inventarios_mensais (
     CONSTRAINT fk_inv_mensal_usuario_fechamento FOREIGN KEY (usuario_fechamento_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
-ALTER TABLE inventarios
-    ADD COLUMN IF NOT EXISTS inventario_mensal_id INT NULL AFTER id,
-    ADD COLUMN IF NOT EXISTS ajuste_aplicado TINYINT(1) NOT NULL DEFAULT 0 AFTER motivo_ajuste,
-    ADD COLUMN IF NOT EXISTS data_ajuste DATETIME NULL AFTER ajuste_aplicado;
+SET @col_inv_mensal_id := (
+    SELECT COUNT(1) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'inventarios' AND COLUMN_NAME = 'inventario_mensal_id'
+);
+SET @sql_col_inv_mensal_id := IF(
+    @col_inv_mensal_id > 0,
+    'SELECT 1',
+    'ALTER TABLE inventarios ADD COLUMN inventario_mensal_id INT NULL AFTER id'
+);
+PREPARE stmt_col_inv_mensal_id FROM @sql_col_inv_mensal_id;
+EXECUTE stmt_col_inv_mensal_id;
+DEALLOCATE PREPARE stmt_col_inv_mensal_id;
+
+SET @col_ajuste_aplicado := (
+    SELECT COUNT(1) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'inventarios' AND COLUMN_NAME = 'ajuste_aplicado'
+);
+SET @sql_col_ajuste_aplicado := IF(
+    @col_ajuste_aplicado > 0,
+    'SELECT 1',
+    'ALTER TABLE inventarios ADD COLUMN ajuste_aplicado TINYINT(1) NOT NULL DEFAULT 0 AFTER motivo_ajuste'
+);
+PREPARE stmt_col_ajuste_aplicado FROM @sql_col_ajuste_aplicado;
+EXECUTE stmt_col_ajuste_aplicado;
+DEALLOCATE PREPARE stmt_col_ajuste_aplicado;
+
+SET @col_data_ajuste := (
+    SELECT COUNT(1) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'inventarios' AND COLUMN_NAME = 'data_ajuste'
+);
+SET @sql_col_data_ajuste := IF(
+    @col_data_ajuste > 0,
+    'SELECT 1',
+    'ALTER TABLE inventarios ADD COLUMN data_ajuste DATETIME NULL AFTER ajuste_aplicado'
+);
+PREPARE stmt_col_data_ajuste FROM @sql_col_data_ajuste;
+EXECUTE stmt_col_data_ajuste;
+DEALLOCATE PREPARE stmt_col_data_ajuste;
 
 -- Se houver mais de uma contagem do mesmo produto no mesmo mes, mantem apenas a mais recente.
 DELETE antigo
@@ -71,9 +105,41 @@ SET i.inventario_mensal_id = im.id,
     i.data_ajuste = COALESCE(i.data_ajuste, i.data_inventario)
 WHERE i.inventario_mensal_id IS NULL;
 
+-- Torna obrigatorio apos migracao dos dados.
 ALTER TABLE inventarios
-    MODIFY COLUMN inventario_mensal_id INT NOT NULL,
-    ADD UNIQUE KEY uq_inventario_mes_produto (inventario_mensal_id, produto_id),
-    ADD CONSTRAINT fk_inv_mensal FOREIGN KEY (inventario_mensal_id) REFERENCES inventarios_mensais(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+    MODIFY COLUMN inventario_mensal_id INT NOT NULL;
+
+SET @idx_inv_mes_produto := (
+    SELECT COUNT(1)
+    FROM information_schema.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'inventarios'
+      AND INDEX_NAME = 'uq_inventario_mes_produto'
+);
+SET @sql_idx_inv_mes_produto := IF(
+    @idx_inv_mes_produto > 0,
+    'SELECT 1',
+    'ALTER TABLE inventarios ADD UNIQUE KEY uq_inventario_mes_produto (inventario_mensal_id, produto_id)'
+);
+PREPARE stmt_idx_inv_mes_produto FROM @sql_idx_inv_mes_produto;
+EXECUTE stmt_idx_inv_mes_produto;
+DEALLOCATE PREPARE stmt_idx_inv_mes_produto;
+
+SET @fk_inv_mensal := (
+    SELECT COUNT(1)
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE CONSTRAINT_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'inventarios'
+      AND CONSTRAINT_NAME = 'fk_inv_mensal'
+      AND CONSTRAINT_TYPE = 'FOREIGN KEY'
+);
+SET @sql_fk_inv_mensal := IF(
+    @fk_inv_mensal > 0,
+    'SELECT 1',
+    'ALTER TABLE inventarios ADD CONSTRAINT fk_inv_mensal FOREIGN KEY (inventario_mensal_id) REFERENCES inventarios_mensais(id) ON UPDATE CASCADE ON DELETE RESTRICT'
+);
+PREPARE stmt_fk_inv_mensal FROM @sql_fk_inv_mensal;
+EXECUTE stmt_fk_inv_mensal;
+DEALLOCATE PREPARE stmt_fk_inv_mensal;
 
 COMMIT;

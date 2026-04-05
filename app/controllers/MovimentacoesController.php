@@ -4,25 +4,27 @@ class MovimentacoesController extends ControllerBase
 {
     public function index()
     {
-        $inicio = $_GET['inicio'] ?? date('Y-m-01');
-        $fim = $_GET['fim'] ?? date('Y-m-t');
+        $periodo = PeriodoService::periodoIndexado(
+            $_GET['inicio'] ?? date('Y-m-01'),
+            $_GET['fim'] ?? date('Y-m-t')
+        );
         $limite = 20;
         $pagina = max(1, (int)($_GET['pagina'] ?? 1));
         $offset = ($pagina - 1) * $limite;
 
         $model = new Movimentacao();
-        $totalRegistros = $model->contarPorPeriodo($inicio, $fim);
+        $totalRegistros = $model->contarPorPeriodo($periodo['inicio_data'], $periodo['fim_data']);
         $totalPaginas = max(1, (int)ceil($totalRegistros / $limite));
         if ($pagina > $totalPaginas) {
             $pagina = $totalPaginas;
             $offset = ($pagina - 1) * $limite;
         }
 
-        $movimentacoes = $model->listarPorPeriodo($inicio, $fim, $limite, $offset);
+        $movimentacoes = $model->listarPorPeriodo($periodo['inicio_data'], $periodo['fim_data'], $limite, $offset);
         $this->render('movimentacoes/index', [
             'movimentacoes' => $movimentacoes,
-            'inicio' => $inicio,
-            'fim' => $fim,
+            'inicio' => $periodo['inicio_data'],
+            'fim' => $periodo['fim_data'],
             'pagina' => $pagina,
             'totalPaginas' => $totalPaginas,
             'totalRegistros' => $totalRegistros
@@ -31,11 +33,13 @@ class MovimentacoesController extends ControllerBase
 
     public function exportarExcel()
     {
-        $inicio = $_GET['inicio'] ?? date('Y-m-01');
-        $fim = $_GET['fim'] ?? date('Y-m-t');
+        $periodo = PeriodoService::periodoIndexado(
+            $_GET['inicio'] ?? date('Y-m-01'),
+            $_GET['fim'] ?? date('Y-m-t')
+        );
 
         $model = new Movimentacao();
-        $movimentacoes = $model->listarPorPeriodo($inicio, $fim, null);
+        $movimentacoes = $model->listarPorPeriodo($periodo['inicio_data'], $periodo['fim_data'], null);
 
         $linhas = array_map(function ($m) {
             return [
@@ -59,11 +63,13 @@ class MovimentacoesController extends ControllerBase
 
     public function exportarPdf()
     {
-        $inicio = $_GET['inicio'] ?? date('Y-m-01');
-        $fim = $_GET['fim'] ?? date('Y-m-t');
+        $periodo = PeriodoService::periodoIndexado(
+            $_GET['inicio'] ?? date('Y-m-01'),
+            $_GET['fim'] ?? date('Y-m-t')
+        );
 
         $model = new Movimentacao();
-        $movimentacoes = $model->listarPorPeriodo($inicio, $fim, null);
+        $movimentacoes = $model->listarPorPeriodo($periodo['inicio_data'], $periodo['fim_data'], null);
 
         $linhas = array_map(function ($m) {
             return [
@@ -77,7 +83,7 @@ class MovimentacoesController extends ControllerBase
 
         $this->exportarPdfHtmlTabela(
             'Exportacao de Movimentacoes',
-            'Periodo: ' . $inicio . ' ate ' . $fim,
+            'Periodo: ' . $periodo['inicio_data'] . ' ate ' . $periodo['fim_data'],
             ['Data', 'Produto', 'Tipo', 'Quantidade', 'Usuario'],
             $linhas
         );

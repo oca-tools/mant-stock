@@ -3,12 +3,44 @@
 
 START TRANSACTION;
 
-ALTER TABLE ferramentas
-    ADD COLUMN IF NOT EXISTS usuario_cadastro_id INT NULL AFTER status;
+SET @col_ferr_ucad := (
+    SELECT COUNT(1) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ferramentas' AND COLUMN_NAME = 'usuario_cadastro_id'
+);
+SET @sql_col_ferr_ucad := IF(
+    @col_ferr_ucad > 0,
+    'SELECT 1',
+    'ALTER TABLE ferramentas ADD COLUMN usuario_cadastro_id INT NULL AFTER status'
+);
+PREPARE stmt_col_ferr_ucad FROM @sql_col_ferr_ucad;
+EXECUTE stmt_col_ferr_ucad;
+DEALLOCATE PREPARE stmt_col_ferr_ucad;
 
-ALTER TABLE emprestimos_ferramentas
-    ADD COLUMN IF NOT EXISTS usuario_executor_id INT NULL AFTER usuario_responsavel,
-    ADD COLUMN IF NOT EXISTS usuario_devolucao_id INT NULL AFTER usuario_executor_id;
+SET @col_emp_exec := (
+    SELECT COUNT(1) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'emprestimos_ferramentas' AND COLUMN_NAME = 'usuario_executor_id'
+);
+SET @sql_col_emp_exec := IF(
+    @col_emp_exec > 0,
+    'SELECT 1',
+    'ALTER TABLE emprestimos_ferramentas ADD COLUMN usuario_executor_id INT NULL AFTER usuario_responsavel'
+);
+PREPARE stmt_col_emp_exec FROM @sql_col_emp_exec;
+EXECUTE stmt_col_emp_exec;
+DEALLOCATE PREPARE stmt_col_emp_exec;
+
+SET @col_emp_dev := (
+    SELECT COUNT(1) FROM information_schema.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'emprestimos_ferramentas' AND COLUMN_NAME = 'usuario_devolucao_id'
+);
+SET @sql_col_emp_dev := IF(
+    @col_emp_dev > 0,
+    'SELECT 1',
+    'ALTER TABLE emprestimos_ferramentas ADD COLUMN usuario_devolucao_id INT NULL AFTER usuario_executor_id'
+);
+PREPARE stmt_col_emp_dev FROM @sql_col_emp_dev;
+EXECUTE stmt_col_emp_dev;
+DEALLOCATE PREPARE stmt_col_emp_dev;
 
 -- Cria indices quando nao existirem.
 SET @idx_ferr_ucad := (

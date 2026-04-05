@@ -37,19 +37,21 @@ class Movimentacao extends ModeloBase
 
     public function listarPorPeriodo($inicio, $fim, $limite = null, $offset = 0)
     {
+        $periodo = PeriodoService::periodoIndexado($inicio, $fim);
         $sql = 'SELECT m.*, p.nome AS produto_nome, u.nome AS usuario_nome
                 FROM movimentacoes m
                 LEFT JOIN produtos p ON p.id = m.produto_id
                 LEFT JOIN usuarios u ON u.id = m.usuario_id
-                WHERE DATE(m.data_movimentacao) BETWEEN :inicio AND :fim
+                WHERE m.data_movimentacao >= :inicio_dt
+                  AND m.data_movimentacao < :fim_dt
                 ORDER BY m.data_movimentacao DESC';
         if ($limite !== null) {
             $sql .= ' LIMIT :limite OFFSET :offset';
         }
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':inicio', $inicio, PDO::PARAM_STR);
-        $stmt->bindValue(':fim', $fim, PDO::PARAM_STR);
+        $stmt->bindValue(':inicio_dt', $periodo['inicio_dt'], PDO::PARAM_STR);
+        $stmt->bindValue(':fim_dt', $periodo['fim_dt'], PDO::PARAM_STR);
         if ($limite !== null) {
             $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
             $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
@@ -60,14 +62,16 @@ class Movimentacao extends ModeloBase
 
     public function contarPorPeriodo($inicio, $fim)
     {
+        $periodo = PeriodoService::periodoIndexado($inicio, $fim);
         $stmt = $this->db->prepare(
             'SELECT COUNT(*) AS total
              FROM movimentacoes
-             WHERE DATE(data_movimentacao) BETWEEN :inicio AND :fim'
+             WHERE data_movimentacao >= :inicio_dt
+               AND data_movimentacao < :fim_dt'
         );
         $stmt->execute([
-            ':inicio' => $inicio,
-            ':fim' => $fim
+            ':inicio_dt' => $periodo['inicio_dt'],
+            ':fim_dt' => $periodo['fim_dt']
         ]);
         $linha = $stmt->fetch();
         return (int)($linha['total'] ?? 0);

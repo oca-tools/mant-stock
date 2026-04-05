@@ -212,7 +212,7 @@ class UsuariosController extends ControllerBase
         } else {
             flash_set(
                 'usuarios',
-                'Convite gerado, mas o envio automatico falhou. Compartilhe manualmente este link: ' . $linkAceite,
+                'Convite gerado, mas o envio automatico falhou. Ajuste o e-mail de saida e gere um novo convite para este usuario.',
                 'warning'
             );
         }

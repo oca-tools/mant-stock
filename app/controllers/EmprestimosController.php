@@ -55,13 +55,6 @@ class EmprestimosController extends ControllerBase
         }
 
         $ferramentaModel = new Ferramenta();
-        $ferramenta = $ferramentaModel->buscarPorId($ferramentaId);
-        if (!$ferramenta || $ferramenta['status'] !== 'Disponivel') {
-            $ferramentas = $ferramentaModel->listar(null);
-            $this->render('emprestimos/criar', ['ferramentas' => $ferramentas, 'erro' => 'Ferramenta indisponivel.']);
-            return;
-        }
-
         $model = new EmprestimoFerramenta();
         $dados = [
             'ferramenta_id' => $ferramentaId,
@@ -70,9 +63,29 @@ class EmprestimosController extends ControllerBase
             'data_devolucao' => null,
             'status' => 'Emprestada'
         ];
-        $id = $model->criar($dados);
 
-        $ferramentaModel->atualizarStatus($ferramentaId, 'Emprestada');
+        $db = Conexao::obter();
+        try {
+            $db->beginTransaction();
+            $ferramenta = $ferramentaModel->buscarPorIdParaAtualizacao($ferramentaId);
+            if (!$ferramenta || $ferramenta['status'] !== 'Disponivel') {
+                $db->rollBack();
+                $ferramentas = $ferramentaModel->listar(null);
+                $this->render('emprestimos/criar', ['ferramentas' => $ferramentas, 'erro' => 'Ferramenta indisponivel.']);
+                return;
+            }
+
+            $id = $model->criar($dados);
+            $ferramentaModel->atualizarStatus($ferramentaId, 'Emprestada');
+            $db->commit();
+        } catch (Throwable $erro) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            $ferramentas = $ferramentaModel->listar(null);
+            $this->render('emprestimos/criar', ['ferramentas' => $ferramentas, 'erro' => 'Falha ao registrar emprestimo. Tente novamente.']);
+            return;
+        }
 
         LogService::registrar(
             $_SESSION['usuario']['id'],
@@ -103,10 +116,25 @@ class EmprestimosController extends ControllerBase
             redirect(url('emprestimos'));
         }
 
-        $model->registrarDevolucao((int)$id, (int)$_SESSION['usuario']['id']);
-
         $ferramentaModel = new Ferramenta();
-        $ferramentaModel->atualizarStatus((int)$emprestimo['ferramenta_id'], 'Disponivel');
+        $db = Conexao::obter();
+        try {
+            $db->beginTransaction();
+            $ferramenta = $ferramentaModel->buscarPorIdParaAtualizacao((int)$emprestimo['ferramenta_id']);
+            if (!$ferramenta) {
+                throw new RuntimeException('Ferramenta nao encontrada para devolucao.');
+            }
+
+            $model->registrarDevolucao((int)$id, (int)$_SESSION['usuario']['id']);
+            $ferramentaModel->atualizarStatus((int)$emprestimo['ferramenta_id'], 'Disponivel');
+            $db->commit();
+        } catch (Throwable $erro) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            flash_set('emprestimos', 'Falha ao registrar devolucao. Tente novamente.', 'danger');
+            redirect(url('emprestimos'));
+        }
 
         LogService::registrar(
             $_SESSION['usuario']['id'],

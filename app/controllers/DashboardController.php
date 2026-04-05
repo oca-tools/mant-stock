@@ -11,9 +11,9 @@ class DashboardController extends ControllerBase
         $movModel = new Movimentacao();
         $movimentacoes = $movModel->listarRecentes(8);
 
-        $maisUtilizados = $db->query('SELECT p.nome, SUM(CASE WHEN m.tipo_movimentacao = "saida" THEN m.quantidade ELSE 0 END) AS total_saida FROM movimentacoes m LEFT JOIN produtos p ON p.id = m.produto_id GROUP BY p.nome ORDER BY total_saida DESC LIMIT 5')->fetchAll();
+        $maisUtilizados = $db->query('SELECT p.nome, SUM(m.quantidade) AS total_saida FROM movimentacoes m LEFT JOIN produtos p ON p.id = m.produto_id WHERE m.tipo_movimentacao = \'saida\' GROUP BY p.nome ORDER BY total_saida DESC LIMIT 5')->fetchAll();
 
-        $maisDescartados = $db->query('SELECT p.nome, SUM(CASE WHEN m.tipo_movimentacao = "descarte" THEN m.quantidade ELSE 0 END) AS total_descarte FROM movimentacoes m LEFT JOIN produtos p ON p.id = m.produto_id GROUP BY p.nome ORDER BY total_descarte DESC LIMIT 5')->fetchAll();
+        $maisDescartados = $db->query('SELECT p.nome, SUM(m.quantidade) AS total_descarte FROM movimentacoes m LEFT JOIN produtos p ON p.id = m.produto_id WHERE m.tipo_movimentacao = \'descarte\' GROUP BY p.nome ORDER BY total_descarte DESC LIMIT 5')->fetchAll();
 
         $this->render('dashboard/index', [
             'totalProdutos' => $totalProdutos,

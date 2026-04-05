@@ -35,6 +35,13 @@ class Ferramenta extends ModeloBase
         return $stmt->fetch();
     }
 
+    public function buscarPorIdParaAtualizacao($id)
+    {
+        $stmt = $this->db->prepare('SELECT * FROM ferramentas WHERE id = :id LIMIT 1 FOR UPDATE');
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
     public function criar($dados)
     {
         $stmt = $this->db->prepare(

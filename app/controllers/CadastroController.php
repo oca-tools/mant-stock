@@ -25,10 +25,9 @@ class CadastroController extends ControllerBase
         $this->exigirCsrf();
 
         $token = trim((string)($_POST['token'] ?? ''));
-        $convite = $this->buscarConviteValidoOuNulo($token);
-        if (!$convite) {
+        if ($token === '') {
             $this->render('auth/aceitar_convite', [
-                'token' => $token,
+                'token' => '',
                 'convite' => null,
                 'erro' => 'Convite invalido, expirado ou ja utilizado.',
                 'sucesso' => null,
@@ -49,7 +48,7 @@ class CadastroController extends ControllerBase
         if ($nome === '' || $senha === '' || $confirmarSenha === '') {
             $this->render('auth/aceitar_convite', [
                 'token' => $token,
-                'convite' => $convite,
+                'convite' => $this->buscarConviteValidoOuNulo($token),
                 'erro' => 'Preencha todos os campos obrigatorios.',
                 'sucesso' => null,
                 'dadosForm' => $dadosForm
@@ -60,7 +59,7 @@ class CadastroController extends ControllerBase
         if (strlen($senha) < 6) {
             $this->render('auth/aceitar_convite', [
                 'token' => $token,
-                'convite' => $convite,
+                'convite' => $this->buscarConviteValidoOuNulo($token),
                 'erro' => 'A senha deve conter ao menos 6 caracteres.',
                 'sucesso' => null,
                 'dadosForm' => $dadosForm
@@ -71,7 +70,7 @@ class CadastroController extends ControllerBase
         if ($senha !== $confirmarSenha) {
             $this->render('auth/aceitar_convite', [
                 'token' => $token,
-                'convite' => $convite,
+                'convite' => $this->buscarConviteValidoOuNulo($token),
                 'erro' => 'A confirmacao de senha nao confere.',
                 'sucesso' => null,
                 'dadosForm' => $dadosForm
@@ -80,31 +79,47 @@ class CadastroController extends ControllerBase
         }
 
         $usuarioModel = new Usuario();
-        if ($usuarioModel->senhaJaUtilizadaNoEmail($convite['email'], $senha)) {
-            $this->render('auth/aceitar_convite', [
-                'token' => $token,
-                'convite' => $convite,
-                'erro' => 'Ja existe conta com este e-mail usando essa mesma senha. Escolha outra senha.',
-                'sucesso' => null,
-                'dadosForm' => $dadosForm
-            ]);
-            return;
-        }
-
         $conviteModel = new ConviteUsuario();
-        $dadosUsuario = [
-            'nome' => $nome,
-            'email' => $convite['email'],
-            'senha_hash' => password_hash($senha, PASSWORD_BCRYPT),
-            'tipo_usuario' => $convite['tipo_usuario'],
-            'ativo' => 1
-        ];
-
         $db = Conexao::obter();
         try {
             $db->beginTransaction();
+            $convite = $conviteModel->buscarValidoPorTokenComBloqueio($token);
+            if (!$convite) {
+                $db->rollBack();
+                $this->render('auth/aceitar_convite', [
+                    'token' => $token,
+                    'convite' => null,
+                    'erro' => 'Convite invalido, expirado ou ja utilizado.',
+                    'sucesso' => null,
+                    'dadosForm' => ['nome' => '', 'senha' => '', 'confirmar_senha' => '']
+                ]);
+                return;
+            }
+
+            if ($usuarioModel->senhaJaUtilizadaNoEmail($convite['email'], $senha)) {
+                $db->rollBack();
+                $this->render('auth/aceitar_convite', [
+                    'token' => $token,
+                    'convite' => $convite,
+                    'erro' => 'Ja existe conta com este e-mail usando essa mesma senha. Escolha outra senha.',
+                    'sucesso' => null,
+                    'dadosForm' => $dadosForm
+                ]);
+                return;
+            }
+
+            $dadosUsuario = [
+                'nome' => $nome,
+                'email' => $convite['email'],
+                'senha_hash' => password_hash($senha, PASSWORD_BCRYPT),
+                'tipo_usuario' => $convite['tipo_usuario'],
+                'ativo' => 1
+            ];
             $usuarioId = (int)$usuarioModel->criar($dadosUsuario);
-            $conviteModel->marcarComoAceito((int)$convite['id'], $usuarioId);
+            $aceito = $conviteModel->marcarComoAceito((int)$convite['id'], $usuarioId);
+            if (!$aceito) {
+                throw new RuntimeException('Convite nao pode ser confirmado neste momento.');
+            }
             $db->commit();
 
             LogService::registrar(

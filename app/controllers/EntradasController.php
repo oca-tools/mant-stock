@@ -102,7 +102,6 @@ class EntradasController extends ControllerBase
             return;
         }
 
-        $entradaModel = new Entrada();
         $dadosEntrada = [
             'produto_id' => $produtoId,
             'quantidade' => $quantidade,
@@ -111,13 +110,7 @@ class EntradasController extends ControllerBase
             'usuario_id' => $_SESSION['usuario']['id'],
             'observacoes' => trim($_POST['observacoes'] ?? '')
         ];
-        $entradaId = $entradaModel->criar($dadosEntrada);
-
-        $produtoModel = new Produto();
-        $produtoModel->atualizarEstoque($produtoId, $quantidade);
-
-        $movModel = new Movimentacao();
-        $movModel->criar([
+        $dadosMovimentacao = [
             'produto_id' => $produtoId,
             'tipo_movimentacao' => 'entrada',
             'quantidade' => $quantidade,
@@ -125,7 +118,18 @@ class EntradasController extends ControllerBase
             'origem' => trim($_POST['fornecedor'] ?? ''),
             'destino' => 'Almoxarifado',
             'observacoes' => trim($_POST['observacoes'] ?? '')
-        ]);
+        ];
+
+        try {
+            $service = new OperacaoEstoqueService();
+            $resultado = $service->registrarEntrada($dadosEntrada, $dadosMovimentacao);
+            $entradaId = (int)$resultado['entrada_id'];
+        } catch (Throwable $erro) {
+            $produtoModel = new Produto();
+            $produtos = $produtoModel->listar(500, 0, '');
+            $this->render('entradas/criar', ['produtos' => $produtos, 'erro' => 'Nao foi possivel registrar a entrada. Tente novamente.']);
+            return;
+        }
 
         LogService::registrar(
             $_SESSION['usuario']['id'],

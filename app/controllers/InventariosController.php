@@ -201,7 +201,20 @@ class InventariosController extends ControllerBase
                     continue;
                 }
 
-                $produtoModel->atualizarEstoque((int)$item['produto_id'], $diferenca);
+                $produto = $produtoModel->buscarPorIdParaAtualizacao((int)$item['produto_id']);
+                if (!$produto) {
+                    throw new RuntimeException('Produto nao encontrado para ajuste de inventario.');
+                }
+
+                if ($diferenca > 0) {
+                    $produtoModel->incrementarEstoque((int)$item['produto_id'], $diferenca);
+                } else {
+                    $debitoAplicado = $produtoModel->debitarEstoqueSemNegativo((int)$item['produto_id'], abs($diferenca));
+                    if (!$debitoAplicado) {
+                        throw new RuntimeException('Nao foi possivel aplicar ajuste de saida no produto ID ' . (int)$item['produto_id'] . '.');
+                    }
+                }
+
                 $movimentacaoModel->criar([
                     'produto_id' => (int)$item['produto_id'],
                     'tipo_movimentacao' => 'ajuste',

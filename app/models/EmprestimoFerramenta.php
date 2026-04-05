@@ -61,7 +61,7 @@ class EmprestimoFerramenta extends ModeloBase
     {
         $stmt = $this->db->prepare(
             'UPDATE emprestimos_ferramentas
-             SET status = "Devolvida",
+             SET status = \'Devolvida\',
                  data_devolucao = NOW(),
                  usuario_devolucao_id = :usuario_devolucao_id
              WHERE id = :id'

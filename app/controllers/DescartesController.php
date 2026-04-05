@@ -35,7 +35,6 @@ class DescartesController extends ControllerBase
             return;
         }
 
-        $descarteModel = new Descarte();
         $dadosDescarte = [
             'produto_id' => $produtoId,
             'quantidade' => $quantidade,
@@ -44,10 +43,7 @@ class DescartesController extends ControllerBase
             'usuario_id' => $_SESSION['usuario']['id'],
             'observacoes' => trim($_POST['observacoes'] ?? '')
         ];
-        $descarteId = $descarteModel->criar($dadosDescarte);
-
-        $movModel = new Movimentacao();
-        $movModel->criar([
+        $dadosMovimentacao = [
             'produto_id' => $produtoId,
             'tipo_movimentacao' => 'descarte',
             'quantidade' => $quantidade,
@@ -55,7 +51,18 @@ class DescartesController extends ControllerBase
             'origem' => 'Uso',
             'destino' => 'Descarte',
             'observacoes' => trim($_POST['observacoes'] ?? '')
-        ]);
+        ];
+
+        try {
+            $service = new OperacaoEstoqueService();
+            $resultado = $service->registrarDescarte($dadosDescarte, $dadosMovimentacao);
+            $descarteId = (int)$resultado['descarte_id'];
+        } catch (Throwable $erro) {
+            $produtoModel = new Produto();
+            $produtos = $produtoModel->listar(200, 0, '');
+            $this->render('descartes/criar', ['produtos' => $produtos, 'erro' => 'Nao foi possivel registrar o descarte. Tente novamente.']);
+            return;
+        }
 
         LogService::registrar($_SESSION['usuario']['id'], 'movimentacao', 'Descarte registrado', 'descartes', $descarteId, null, $dadosDescarte);
 

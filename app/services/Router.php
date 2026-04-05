@@ -27,16 +27,12 @@ class Router
             if (preg_match($padrao, $uri, $matches)) {
                 array_shift($matches);
 
-                if (!empty($rota['opcoes']['auth'])) {
-                    AuthMiddleware::verificar();
-                }
-
                 if (!empty($rota['opcoes']['admin'])) {
                     AuthMiddleware::verificarAdmin();
-                }
-
-                if (!empty($rota['opcoes']['tipos'])) {
+                } elseif (!empty($rota['opcoes']['tipos'])) {
                     AuthMiddleware::verificarTipos($rota['opcoes']['tipos']);
+                } elseif (!empty($rota['opcoes']['auth'])) {
+                    AuthMiddleware::verificar();
                 }
 
                 [$controller, $metodoController] = $rota['acao'];

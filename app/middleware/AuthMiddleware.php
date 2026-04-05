@@ -7,7 +7,7 @@ class AuthMiddleware
         $config = require __DIR__ . '/../config/config.php';
         $expiracao = $config['sessao']['expiracao'];
         if (!empty($_SESSION['ultimo_acesso']) && (time() - $_SESSION['ultimo_acesso']) > $expiracao) {
-            session_destroy();
+            encerrar_sessao_atual();
             redirect(url('login'));
         }
         $_SESSION['ultimo_acesso'] = time();
