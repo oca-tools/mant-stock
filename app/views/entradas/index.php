@@ -28,7 +28,7 @@
                         <th>Data</th>
                         <th>Produto</th>
                         <th>Quantidade</th>
-                        <th>Fornecedor</th>
+                        <th>Nº da Requisição</th>
                         <th>Usuario Emissor</th>
                     </tr>
                 </thead>
@@ -48,7 +48,7 @@
                                 <td><?php echo e($e['data_entrada']); ?></td>
                                 <td><?php echo e($e['produto_nome']); ?></td>
                                 <td><?php echo e($e['quantidade']); ?></td>
-                                <td><?php echo e($e['fornecedor']); ?></td>
+                                <td><?php echo e($e['nota_fiscal'] ?: 'Nao informado'); ?></td>
                                 <td><?php echo e($e['usuario_nome']); ?></td>
                             </tr>
                         <?php endforeach; ?>

@@ -40,18 +40,16 @@ class ProdutosController extends ControllerBase
             return [
                 $p['nome'],
                 $p['categoria_nome'] ?? '',
-                $p['codigo_interno'] ?? '',
                 $p['unidade_medida'] ?? '',
                 $p['estoque_atual'] ?? 0,
                 $p['estoque_minimo'] ?? 0,
-                $p['localizacao'] ?? '',
                 $p['observacoes'] ?? ''
             ];
         }, $produtos);
 
         $this->exportarCsv(
             'produtos.csv',
-            ['Produto', 'Categoria', 'Código Interno', 'Unidade', 'Estoque Atual', 'Estoque Mínimo', 'Localização', 'Observações'],
+            ['Produto', 'Categoria', 'Unidade', 'Estoque Atual', 'Estoque Mínimo', 'Observações'],
             $linhas
         );
     }
@@ -67,8 +65,7 @@ class ProdutosController extends ControllerBase
                 $p['nome'],
                 $p['categoria_nome'] ?? '',
                 $p['estoque_atual'] ?? 0,
-                $p['estoque_minimo'] ?? 0,
-                $p['localizacao'] ?? ''
+                $p['estoque_minimo'] ?? 0
             ];
         }, $produtos);
 
@@ -76,7 +73,7 @@ class ProdutosController extends ControllerBase
         $this->exportarPdfHtmlTabela(
             'Exportação de Produtos',
             $subtitulo,
-            ['Produto', 'Categoria', 'Estoque Atual', 'Estoque Mínimo', 'Localização'],
+            ['Produto', 'Categoria', 'Estoque Atual', 'Estoque Mínimo'],
             $linhas
         );
     }
@@ -88,7 +85,8 @@ class ProdutosController extends ControllerBase
         if ($dados['erro']) {
             $categoriaModel = new Categoria();
             $categorias = $categoriaModel->listar();
-            $this->render('produtos/criar', ['categorias' => $categorias, 'erro' => $dados['mensagem']]);
+            $config = require __DIR__ . '/../config/config.php';
+            $this->render('produtos/criar', ['categorias' => $categorias, 'erro' => $dados['mensagem'], 'unidades' => $config['listas']['unidades_medida']]);
             return;
         }
 
@@ -212,11 +210,11 @@ class ProdutosController extends ControllerBase
             'mensagem' => '',
             'nome' => $nome,
             'categoria_id' => (int)($_POST['categoria_id'] ?? 0),
-            'codigo_interno' => trim($_POST['codigo_interno'] ?? ''),
+            'codigo_interno' => '',
             'unidade_medida' => $unidade,
             'estoque_atual' => (float)($_POST['estoque_atual'] ?? 0),
             'estoque_minimo' => (float)($_POST['estoque_minimo'] ?? 0),
-            'localizacao' => trim($_POST['localizacao'] ?? ''),
+            'localizacao' => '',
             'observacoes' => trim($_POST['observacoes'] ?? '')
         ];
     }

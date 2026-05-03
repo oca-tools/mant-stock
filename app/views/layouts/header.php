@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo url('css/app.css'); ?>" rel="stylesheet">
+    <link href="<?php echo asset_url('css/app.css'); ?>" rel="stylesheet">
 </head>
 <body data-rota="<?php echo e($rotaAtual); ?>">
 <?php if ($usuario): ?>
@@ -31,11 +31,9 @@
     <aside class="app-sidebar" id="app-sidebar">
         <div class="sidebar-brand">
             <div class="brand-logo-wrap">
-                <img src="<?php echo asset_url('img/logo-grand-oca.png'); ?>" alt="Grand Oca Maragogi Resort" class="brand-logo" loading="lazy">
+                <img src="<?php echo asset_url('img/logo-mantstock.svg'); ?>" data-logo-light="<?php echo asset_url('img/logo-mantstock.svg'); ?>" data-logo-dark="<?php echo asset_url('img/logo-mantstock-dark.svg'); ?>" alt="Logo do MantStock" class="brand-logo js-theme-logo" loading="lazy">
             </div>
             <div class="brand-meta">
-                <div class="brand-title">OCA MantStock</div>
-                <div class="brand-subtitle">Grand Oca Resort</div>
                 <div class="brand-version">Versão 1.0</div>
             </div>
             <button class="btn-close-sidebar d-lg-none" type="button" id="close-sidebar" aria-label="Fechar menu">

@@ -42,7 +42,6 @@ class EntradasController extends ControllerBase
                 $e['data_entrada'] ?? '',
                 $e['produto_nome'] ?? '',
                 $e['quantidade'] ?? 0,
-                $e['fornecedor'] ?? '',
                 $e['nota_fiscal'] ?? '',
                 $e['usuario_nome'] ?? '',
                 $e['observacoes'] ?? ''
@@ -51,7 +50,7 @@ class EntradasController extends ControllerBase
 
         $this->exportarCsv(
             'entradas.csv',
-            ['Data', 'Produto', 'Quantidade', 'Fornecedor', 'Nota Fiscal', 'Usuario Emissor', 'Observacoes'],
+            ['Data', 'Produto', 'Quantidade', 'Nº da Requisicao', 'Usuario Emissor', 'Observacoes'],
             $linhas
         );
     }
@@ -66,7 +65,7 @@ class EntradasController extends ControllerBase
                 $e['data_entrada'] ?? '',
                 $e['produto_nome'] ?? '',
                 $e['quantidade'] ?? 0,
-                $e['fornecedor'] ?? '',
+                $e['nota_fiscal'] ?? '',
                 $e['usuario_nome'] ?? ''
             ];
         }, $entradas);
@@ -74,7 +73,7 @@ class EntradasController extends ControllerBase
         $this->exportarPdfHtmlTabela(
             'Exportacao de Entradas',
             'Historico de entradas de estoque',
-            ['Data', 'Produto', 'Quantidade', 'Fornecedor', 'Usuario Emissor'],
+            ['Data', 'Produto', 'Quantidade', 'Nº da Requisicao', 'Usuario Emissor'],
             $linhas
         );
     }
@@ -105,7 +104,7 @@ class EntradasController extends ControllerBase
         $dadosEntrada = [
             'produto_id' => $produtoId,
             'quantidade' => $quantidade,
-            'fornecedor' => trim($_POST['fornecedor'] ?? ''),
+            'fornecedor' => 'Almoxarifado central/externo',
             'nota_fiscal' => trim($_POST['nota_fiscal'] ?? ''),
             'usuario_id' => $_SESSION['usuario']['id'],
             'observacoes' => trim($_POST['observacoes'] ?? '')
@@ -115,7 +114,7 @@ class EntradasController extends ControllerBase
             'tipo_movimentacao' => 'entrada',
             'quantidade' => $quantidade,
             'usuario_id' => $_SESSION['usuario']['id'],
-            'origem' => trim($_POST['fornecedor'] ?? ''),
+            'origem' => 'Almoxarifado central/externo',
             'destino' => 'Almoxarifado',
             'observacoes' => trim($_POST['observacoes'] ?? '')
         ];

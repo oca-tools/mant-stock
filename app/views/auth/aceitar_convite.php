@@ -3,13 +3,13 @@
 <section class="login-shell">
     <aside class="login-hero">
         <div>
-            <img src="<?php echo url('img/logo-grand-oca.png'); ?>" alt="Grand Oca Maragogi Resort" class="login-logo">
+            <img src="<?php echo asset_url('img/logo-mantstock.svg'); ?>" data-logo-light="<?php echo asset_url('img/logo-mantstock.svg'); ?>" data-logo-dark="<?php echo asset_url('img/logo-mantstock-dark.svg'); ?>" alt="Logo do MantStock" class="login-logo js-theme-logo">
         </div>
         <div>
             <h1>Crie sua conta de acesso</h1>
             <p>Este cadastro foi liberado por convite. Depois de concluir, voce podera acessar o sistema normalmente.</p>
         </div>
-        <div class="small">OCA MantStock • Cadastro seguro por link temporario</div>
+        <div class="small">MantStock • Cadastro seguro por link temporario</div>
     </aside>
 
     <div class="login-form-wrap">

@@ -15,6 +15,11 @@ abstract class ControllerBase
     // Valida a senha do usuario logado para confirmar operacoes sensiveis
     protected function validarSenhaOperacional($senhaInformada, &$mensagemErro = null)
     {
+        if (!empty($_SESSION['senha_operacional_confirmada'])) {
+            $mensagemErro = null;
+            return true;
+        }
+
         $senhaInformada = (string)$senhaInformada;
         if ($senhaInformada === '') {
             $mensagemErro = 'Informe sua senha para confirmar a operacao.';
@@ -35,6 +40,10 @@ abstract class ControllerBase
         }
 
         $mensagemErro = null;
+        if (!empty($_POST['lembrar_senha_operacional'])) {
+            $_SESSION['senha_operacional_confirmada'] = true;
+        }
+
         return true;
     }
 

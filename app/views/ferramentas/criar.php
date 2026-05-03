@@ -23,12 +23,8 @@
                 <label class="form-label">Descricao</label>
                 <textarea name="descricao" class="form-control" rows="3"></textarea>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Senha de confirmacao</label>
-                <input type="password" name="senha_confirmacao" class="form-control" autocomplete="current-password" required>
-            </div>
             <div class="d-flex gap-2 flex-wrap">
-                <button class="btn btn-primary" type="submit">Salvar ferramenta</button>
+                <?php $modalId = 'modal-confirmar-ferramenta'; $acaoConfirmacao = 'Salvar ferramenta'; require __DIR__ . '/../partials/confirmacao_operacional_modal.php'; ?>
                 <a class="btn btn-outline-secondary" href="<?php echo url('ferramentas'); ?>">Voltar</a>
             </div>
         </form>

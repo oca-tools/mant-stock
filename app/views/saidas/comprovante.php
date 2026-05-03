@@ -17,7 +17,7 @@
     <div class="panel__body">
         <div class="comprovante-cabecalho">
             <div>
-                <strong>Grand Oca Maragogi Resort</strong><br>
+                <strong>MantStock</strong><br>
                 Sistema de Estoque da Manutencao
             </div>
             <div class="text-end">
@@ -41,11 +41,7 @@
                 <label class="form-label">Produto</label>
                 <div class="form-control"><?php echo e($saida['produto_nome']); ?></div>
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Codigo interno</label>
-                <div class="form-control"><?php echo e($saida['codigo_interno']); ?></div>
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <label class="form-label">Quantidade</label>
                 <div class="form-control"><?php echo e($saida['quantidade']); ?> <?php echo e($saida['unidade_medida']); ?></div>
             </div>

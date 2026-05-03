@@ -11,14 +11,23 @@
 *.log
 *.tmp
 *.bak
+*.bak.*
+*.tar
+*.tar.gz
+*.zip
+*.sql.gz
 
 # Uploads de runtime (mantem apenas o marcador de pasta)
 /public/uploads/*
 !/public/uploads/.gitkeep
 
+# Ativo legado nao usado no produto atual
+/public/img/logo-grand-oca.png
+
 # Artefatos de sistema/IDE
 .DS_Store
 Thumbs.db
+desktop.ini
 /.idea/
 /.vscode/
 

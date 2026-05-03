@@ -3,7 +3,7 @@
 <section class="page-header">
     <div>
         <h2 class="page-header__titulo">Novo Produto</h2>
-        <p class="page-header__subtitulo">Cadastre materiais com dados completos para rastreabilidade e consumo.</p>
+        <p class="page-header__subtitulo">Cadastre materiais com os dados essenciais para estoque, consumo e reposicao.</p>
     </div>
 </section>
 
@@ -16,11 +16,11 @@
         <form method="POST" action="<?php echo url('produtos'); ?>" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
             <div class="row">
-                <div class="col-lg-6 mb-3">
+                <div class="col-lg-7 mb-3">
                     <label class="form-label">Nome</label>
                     <input type="text" name="nome" class="form-control" required>
                 </div>
-                <div class="col-lg-3 mb-3">
+                <div class="col-lg-5 mb-3">
                     <label class="form-label">Categoria</label>
                     <select name="categoria_id" class="form-select">
                         <option value="">Selecione</option>
@@ -29,14 +29,10 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-lg-3 mb-3">
-                    <label class="form-label">Código interno</label>
-                    <input type="text" name="codigo_interno" class="form-control">
-                </div>
             </div>
 
             <div class="row">
-                <div class="col-lg-2 mb-3">
+                <div class="col-lg-3 mb-3">
                     <label class="form-label">Unidade</label>
                     <select name="unidade_medida" class="form-select">
                         <option value="">Selecione</option>
@@ -45,17 +41,13 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-lg-2 mb-3">
+                <div class="col-lg-3 mb-3">
                     <label class="form-label">Estoque atual</label>
                     <input type="number" step="0.01" name="estoque_atual" class="form-control" value="0">
                 </div>
-                <div class="col-lg-2 mb-3">
+                <div class="col-lg-3 mb-3">
                     <label class="form-label">Estoque mínimo</label>
                     <input type="number" step="0.01" name="estoque_minimo" class="form-control" value="0">
-                </div>
-                <div class="col-lg-3 mb-3">
-                    <label class="form-label">Localização</label>
-                    <input type="text" name="localizacao" class="form-control">
                 </div>
                 <div class="col-lg-3 mb-3">
                     <label class="form-label">Imagem</label>

@@ -11,11 +11,11 @@ class EmailService
         $remetenteNome = (string)($mailConfig['remetente_nome'] ?? 'Sistema de Estoque');
         $modoTeste = !empty($mailConfig['modo_teste']);
 
-        $assunto = 'Convite para cadastro no OCA MantStock';
+        $assunto = 'Convite para cadastro no MantStock';
         $nomeExibicao = $nomeSugerido !== '' ? $nomeSugerido : 'colaborador(a)';
 
         $corpoHtml = '<html><body style="font-family:Arial,sans-serif;color:#1f2937;">'
-            . '<h2>Cadastro de usuario - OCA MantStock</h2>'
+            . '<h2>Cadastro de usuario - MantStock</h2>'
             . '<p>Ola, ' . e($nomeExibicao) . '.</p>'
             . '<p>Voce recebeu um convite para criar sua conta no sistema de estoque da manutencao.</p>'
             . '<p><strong>Perfil de acesso:</strong> ' . e($tipoUsuario) . '</p>'

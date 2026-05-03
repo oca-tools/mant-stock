@@ -31,7 +31,7 @@
         <form class="row g-2" method="GET" action="<?php echo url('produtos'); ?>">
             <div class="col-lg-8">
                 <label class="form-label">Buscar produto</label>
-                <input type="text" name="busca" class="form-control" placeholder="Digite nome, código interno ou localização" value="<?php echo e($busca); ?>">
+                <input type="text" name="busca" class="form-control" placeholder="Digite o nome do produto" value="<?php echo e($busca); ?>">
             </div>
             <div class="col-lg-2 d-flex align-items-end">
                 <button class="btn btn-primary w-100" type="submit">Buscar</button>
@@ -54,14 +54,13 @@
                         <th>Estoque</th>
                         <th>Mínimo</th>
                         <th>Unidade</th>
-                        <th>Localização</th>
                         <th class="text-end">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($produtos)): ?>
                         <tr>
-                            <td colspan="7">
+                            <td colspan="6">
                                 <div class="empty-state">
                                     <i class="bi bi-search"></i>
                                     Nenhum produto encontrado para o termo informado.
@@ -78,7 +77,6 @@
                                 <td><?php echo e($p['estoque_atual']); ?></td>
                                 <td><?php echo e($p['estoque_minimo']); ?></td>
                                 <td><?php echo e($p['unidade_medida']); ?></td>
-                                <td><?php echo e($p['localizacao']); ?></td>
                                 <td class="text-end">
                                     <a class="btn btn-sm btn-outline-primary" href="<?php echo url('produtos/ver/' . $p['id']); ?>">Detalhes</a>
                                     <?php if (in_array($tipoUsuario, ['Administrador', 'Almoxarifado'], true)): ?>

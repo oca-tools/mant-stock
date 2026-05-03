@@ -7,7 +7,7 @@ class LgpdController extends ControllerBase
         $config = require __DIR__ . '/../config/config.php';
         $this->render('lgpd/politica', [
             'versaoPolitica' => (string)($config['lgpd']['versao_politica'] ?? '2026-04'),
-            'emailEncarregado' => (string)($config['lgpd']['email_encarregado'] ?? 'privacidade@oca-tools.com.br')
+            'emailEncarregado' => (string)($config['lgpd']['email_encarregado'] ?? 'privacidade@mantstock.local')
         ]);
     }
 
@@ -26,7 +26,7 @@ class LgpdController extends ControllerBase
         $this->render('lgpd/aceite', [
             'erro' => null,
             'versaoPolitica' => $versaoPolitica,
-            'emailEncarregado' => (string)($config['lgpd']['email_encarregado'] ?? 'privacidade@oca-tools.com.br')
+            'emailEncarregado' => (string)($config['lgpd']['email_encarregado'] ?? 'privacidade@mantstock.local')
         ]);
     }
 
@@ -40,7 +40,7 @@ class LgpdController extends ControllerBase
             $this->render('lgpd/aceite', [
                 'erro' => 'Voce precisa confirmar o aceite para continuar.',
                 'versaoPolitica' => (string)($config['lgpd']['versao_politica'] ?? '2026-04'),
-                'emailEncarregado' => (string)($config['lgpd']['email_encarregado'] ?? 'privacidade@oca-tools.com.br')
+                'emailEncarregado' => (string)($config['lgpd']['email_encarregado'] ?? 'privacidade@mantstock.local')
             ]);
             return;
         }

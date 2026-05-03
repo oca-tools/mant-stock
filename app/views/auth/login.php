@@ -2,13 +2,13 @@
 <section class="login-shell">
     <aside class="login-hero">
         <div>
-            <img src="<?php echo asset_url('img/logo-grand-oca.png'); ?>" alt="Grand Oca Maragogi Resort" class="login-logo">
+            <img src="<?php echo asset_url('img/logo-mantstock.svg'); ?>" data-logo-light="<?php echo asset_url('img/logo-mantstock.svg'); ?>" data-logo-dark="<?php echo asset_url('img/logo-mantstock-dark.svg'); ?>" alt="Logo do MantStock" class="login-logo js-theme-logo">
         </div>
         <div>
             <h1>Gestão Inteligente de Estoque da Manutenção</h1>
             <p>Controle materiais, saídas, inventários e auditoria em um fluxo profissional para a operação diária do resort.</p>
         </div>
-        <div class="small">Ambiente interno seguro • Grand Oca Maragogi Resort</div>
+        <div class="small">Ambiente interno seguro para equipes de manutenção</div>
     </aside>
 
     <div class="login-form-wrap">

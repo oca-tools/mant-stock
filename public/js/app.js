@@ -17,6 +17,15 @@
         raiz.setAttribute('data-theme', temaFinal);
         localStorage.setItem('tema_ui', temaFinal);
 
+        selecionarTodos('.js-theme-logo').forEach(function (logo) {
+            var srcClaro = logo.getAttribute('data-logo-light');
+            var srcEscuro = logo.getAttribute('data-logo-dark');
+            var novoSrc = temaFinal === 'dark' ? srcEscuro : srcClaro;
+            if (novoSrc && logo.getAttribute('src') !== novoSrc) {
+                logo.setAttribute('src', novoSrc);
+            }
+        });
+
         var botaoTema = selecionar('#toggle-theme');
         if (!botaoTema) return;
         botaoTema.innerHTML = temaFinal === 'dark'
@@ -203,6 +212,35 @@
         });
     }
 
+    function iniciarConfirmacaoOperacional() {
+        selecionarTodos('[data-operational-confirm]').forEach(function (botao) {
+            botao.addEventListener('click', function () {
+                var formulario = botao.closest('form');
+                if (!formulario) return;
+
+                if (!formulario.checkValidity()) {
+                    formulario.classList.add('was-validated');
+                    formulario.reportValidity();
+                    return;
+                }
+
+                var alvo = botao.getAttribute('data-operational-confirm');
+                var modalEl = alvo ? selecionar(alvo) : null;
+                if (!modalEl || !window.bootstrap) return;
+
+                var campoSenha = selecionar('input[name="senha_confirmacao"]', modalEl);
+                var modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
+                modalEl.addEventListener('shown.bs.modal', function aoMostrar() {
+                    modalEl.removeEventListener('shown.bs.modal', aoMostrar);
+                    if (campoSenha) {
+                        campoSenha.focus();
+                    }
+                });
+                modal.show();
+            });
+        });
+    }
+
     function iniciarAlertas() {
         selecionarTodos('.alert').forEach(function (alerta) {
             if (!alerta.classList.contains('alert-success')) return;
@@ -226,5 +264,6 @@
     iniciarFiltroSelect();
     iniciarVisualizacaoEstoque();
     iniciarValidacaoFormularios();
+    iniciarConfirmacaoOperacional();
     iniciarAlertas();
 })();

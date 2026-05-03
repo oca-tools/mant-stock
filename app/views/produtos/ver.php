@@ -3,7 +3,7 @@
 <section class="page-header">
     <div>
         <h2 class="page-header__titulo"><?php echo e($produto['nome']); ?></h2>
-        <p class="page-header__subtitulo">Código interno: <?php echo e($produto['codigo_interno']); ?></p>
+        <p class="page-header__subtitulo">Histórico e parâmetros de estoque do item.</p>
     </div>
     <div class="page-header__acoes">
         <a class="btn btn-outline-secondary" href="<?php echo url('produtos'); ?>">Voltar</a>
@@ -21,7 +21,6 @@
                 <div class="d-flex justify-content-between py-1 border-bottom"><span class="text-muted">Unidade</span><strong><?php echo e($produto['unidade_medida']); ?></strong></div>
                 <div class="d-flex justify-content-between py-1 border-bottom"><span class="text-muted">Estoque atual</span><strong><?php echo e($produto['estoque_atual']); ?></strong></div>
                 <div class="d-flex justify-content-between py-1 border-bottom"><span class="text-muted">Estoque mínimo</span><strong><?php echo e($produto['estoque_minimo']); ?></strong></div>
-                <div class="d-flex justify-content-between py-1"><span class="text-muted">Localização</span><strong><?php echo e($produto['localizacao']); ?></strong></div>
                 <hr>
                 <div><span class="text-muted d-block mb-1">Observações</span><?php echo e($produto['observacoes']); ?></div>
             </div>

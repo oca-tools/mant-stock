@@ -29,7 +29,7 @@ foreach ($produtos as $itemResumo) {
         <form class="row g-2" method="GET" action="<?php echo url('estoque'); ?>">
             <div class="col-lg-5">
                 <label class="form-label">Busca</label>
-                <input type="text" name="busca" class="form-control" placeholder="Buscar por nome, código ou local" value="<?php echo e($busca); ?>">
+                <input type="text" name="busca" class="form-control" placeholder="Buscar por nome do produto" value="<?php echo e($busca); ?>">
             </div>
             <div class="col-lg-3">
                 <label class="form-label">Ordenação</label>
@@ -106,11 +106,7 @@ foreach ($produtos as $itemResumo) {
                                 <h4><?php echo e($p['nome']); ?></h4>
                                 <p>
                                     <?php echo e($p['categoria_nome']); ?>
-                                    <?php if (!empty($p['codigo_interno'])): ?>
-                                        <span class="mx-1">•</span><?php echo e($p['codigo_interno']); ?>
-                                    <?php endif; ?>
                                 </p>
-                                <small>Local: <?php echo e($p['localizacao'] ?: 'Não informado'); ?></small>
                             </div>
 
                             <div class="estoque-linha__indicador">
@@ -143,7 +139,6 @@ foreach ($produtos as $itemResumo) {
                                 <th>Atual</th>
                                 <th>Mínimo</th>
                                 <th>Unidade</th>
-                                <th>Localização</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -161,7 +156,6 @@ foreach ($produtos as $itemResumo) {
                                     <td><?php echo e(number_format($atual, 2, ',', '.')); ?></td>
                                     <td><?php echo e(number_format($minimo, 2, ',', '.')); ?></td>
                                     <td><?php echo e($p['unidade_medida']); ?></td>
-                                    <td><?php echo e($p['localizacao'] ?: 'Não informado'); ?></td>
                                     <td><span class="status-pill <?php echo e($statusTabela); ?>"><?php echo e($textoTabela); ?></span></td>
                                 </tr>
                             <?php endforeach; ?>

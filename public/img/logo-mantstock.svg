@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 170" role="img" aria-label="MantStock">
+  <defs>
+    <linearGradient id="markGradient" x1="22" x2="126" y1="28" y2="132" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#18a999"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <rect x="24" y="28" width="104" height="104" rx="24" fill="url(#markGradient)"/>
+    <path d="M50 66h52c5.5 0 10 4.5 10 10v31c0 5.5-4.5 10-10 10H50c-5.5 0-10-4.5-10-10V76c0-5.5 4.5-10 10-10Z" fill="#fff" opacity=".95"/>
+    <path d="M48 66l12-18h32l12 18" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M57 88h38M57 103h26" stroke="#0f766e" stroke-width="8" stroke-linecap="round"/>
+    <text x="158" y="105" fill="#172033" font-family="Inter, Roboto, Arial, sans-serif" font-size="68" font-weight="900" letter-spacing="0">
+      <tspan fill="#0f766e">Mant</tspan><tspan>Stock</tspan>
+    </text>
+  </g>
+</svg>

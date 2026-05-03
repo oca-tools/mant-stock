@@ -22,6 +22,7 @@ class DescartesController extends ControllerBase
         $produtoId = (int)($_POST['produto_id'] ?? 0);
         $quantidade = (float)($_POST['quantidade'] ?? 0);
         $motivo = trim($_POST['motivo_descarte'] ?? '');
+        $senhaConfirmacao = $_POST['senha_confirmacao'] ?? '';
         if ($produtoId <= 0 || $quantidade <= 0) {
             $produtoModel = new Produto();
             $produtos = $produtoModel->listar(200, 0, '');
@@ -32,6 +33,14 @@ class DescartesController extends ControllerBase
             $produtoModel = new Produto();
             $produtos = $produtoModel->listar(200, 0, '');
             $this->render('descartes/criar', ['produtos' => $produtos, 'erro' => 'Motivo do descarte e obrigatorio.']);
+            return;
+        }
+
+        $erroSenha = null;
+        if (!$this->validarSenhaOperacional($senhaConfirmacao, $erroSenha)) {
+            $produtoModel = new Produto();
+            $produtos = $produtoModel->listar(200, 0, '');
+            $this->render('descartes/criar', ['produtos' => $produtos, 'erro' => $erroSenha]);
             return;
         }
 
@@ -64,7 +73,7 @@ class DescartesController extends ControllerBase
             return;
         }
 
-        LogService::registrar($_SESSION['usuario']['id'], 'movimentacao', 'Descarte registrado', 'descartes', $descarteId, null, $dadosDescarte);
+        LogService::registrar($_SESSION['usuario']['id'], 'movimentacao', 'Descarte registrado com validacao de senha', 'descartes', $descarteId, null, array_merge($dadosDescarte, ['validacao_senha' => true]));
 
         redirect(url('descartes'));
     }

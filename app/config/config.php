@@ -31,7 +31,7 @@ $forcarHttpsPadrao = in_array($ambiente, ['producao', 'production', 'staging'], 
 return [
     'app' => [
         'ambiente' => $ambiente,
-        'nome' => (string)$lerAmbiente('APP_NOME', 'Controle de Estoque - Manutencao'),
+        'nome' => (string)$lerAmbiente('APP_NOME', 'MantStock'),
         'url_base' => (string)$lerAmbiente('APP_URL_BASE', '/'),
         'url_publica' => (string)$lerAmbiente('APP_URL_PUBLICA', 'http://localhost'),
         'forcar_https' => $toBool($lerAmbiente('APP_FORCAR_HTTPS', $forcarHttpsPadrao), $forcarHttpsPadrao),
@@ -50,8 +50,8 @@ return [
         'samesite' => (string)$lerAmbiente('SESSAO_SAMESITE', 'Lax')
     ],
     'mail' => [
-        'remetente_email' => (string)$lerAmbiente('MAIL_REMETENTE_EMAIL', 'nao-responda@oca-mantstock.local'),
-        'remetente_nome' => (string)$lerAmbiente('MAIL_REMETENTE_NOME', 'OCA MantStock'),
+        'remetente_email' => (string)$lerAmbiente('MAIL_REMETENTE_EMAIL', 'nao-responda@mantstock.local'),
+        'remetente_nome' => (string)$lerAmbiente('MAIL_REMETENTE_NOME', 'MantStock'),
         'modo_teste' => $toBool($lerAmbiente('MAIL_MODO_TESTE', false), false)
     ],
     'lgpd' => [
@@ -60,7 +60,7 @@ return [
         // Quando true, usuarios autenticados precisam aceitar os termos antes de usar o sistema.
         'exigir_aceite' => $toBool($lerAmbiente('LGPD_EXIGIR_ACEITE', true), true),
         // Contato interno para solicitacoes do titular.
-        'email_encarregado' => (string)$lerAmbiente('LGPD_EMAIL_ENCARREGADO', 'privacidade@oca-tools.com.br'),
+        'email_encarregado' => (string)$lerAmbiente('LGPD_EMAIL_ENCARREGADO', 'privacidade@mantstock.local'),
         // Retencao de auditoria para minimizacao de dados.
         'retencao_logs_dias' => $toInt($lerAmbiente('LGPD_RETENCAO_LOGS_DIAS', 365), 365),
         // Anonimizacao de IP/user-agent apos esse periodo.

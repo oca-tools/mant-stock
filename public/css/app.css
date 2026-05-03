@@ -21,15 +21,15 @@
     --bg-superficie: rgba(255, 255, 255, 0.78);
     --bg-superficie-forte: #ffffff;
     --bg-superficie-secundaria: #f5f8fc;
-    --bg-sidebar: linear-gradient(180deg, #101826 0%, #162338 42%, #21354f 100%);
-    --bg-sidebar-hover: rgba(255, 255, 255, 0.1);
-    --bg-sidebar-ativo: rgba(255, 255, 255, 0.2);
+    --bg-sidebar: #ffffff;
+    --bg-sidebar-hover: #eef5ff;
+    --bg-sidebar-ativo: #dbeafe;
 
     --texto-principal: #111c2d;
     --texto-secundario: #55657e;
     --texto-fraco: #7b8ca4;
-    --texto-sidebar: #dbe7ff;
-    --texto-sidebar-fraco: #9db1d5;
+    --texto-sidebar: #172033;
+    --texto-sidebar-fraco: #5d6d83;
 
     --borda-suave: #dde5ef;
     --borda-media: #ccd7e6;
@@ -142,7 +142,7 @@ a:hover {
     top: 0;
     height: 100vh;
     overflow-y: auto;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid var(--borda-suave);
 }
 
 .app-sidebar::-webkit-scrollbar {
@@ -150,32 +150,35 @@ a:hover {
 }
 
 .app-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(93, 109, 131, 0.28);
     border-radius: 999px;
 }
 
 .sidebar-brand {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--bg-superficie-secundaria);
+    border: 1px solid var(--borda-suave);
     border-radius: var(--raio-md);
-    padding: 12px 14px;
+    padding: 16px 14px;
     margin-bottom: 18px;
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
 }
 
 .brand-logo-wrap {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
+    width: min(210px, 100%);
+    height: 54px;
+    border-radius: 0;
     background: transparent;
     display: grid;
     place-items: center;
-    padding: 6px;
+    padding: 0;
     box-shadow: none;
-    flex: 0 0 64px;
+    flex: 0 0 auto;
 }
 
 .brand-logo {
@@ -187,36 +190,68 @@ a:hover {
 
 .brand-meta {
     min-width: 0;
-    padding-right: 34px;
-}
-
-.brand-title {
-    margin: 0;
-    font-size: 0.9rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    color: #f2f7ff;
-}
-
-.brand-subtitle {
-    margin-top: 1px;
-    font-size: 0.74rem;
-    color: #d0def3;
+    padding-right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .brand-version {
-    margin-top: 4px;
+    margin-top: 0;
     display: inline-block;
     font-size: 0.68rem;
-    color: #eff6ff;
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: var(--cor-primaria-700);
+    border: 1px solid #bfdbfe;
     border-radius: 999px;
     padding: 2px 8px;
-    background: rgba(255, 255, 255, 0.06);
+    background: #eff6ff;
 }
 
 [data-theme="dark"] .brand-logo-wrap {
     background: transparent;
+}
+
+[data-theme="dark"] .app-sidebar {
+    border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .sidebar-brand {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .brand-version {
+    color: #eff6ff;
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .sidebar-link:hover,
+[data-theme="dark"] .sidebar-group:hover {
+    color: #fff;
+}
+
+[data-theme="dark"] .sidebar-link.is-active {
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .sidebar-sublink {
+    border-left-color: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="dark"] .sidebar-sublink:hover {
+    color: #fff;
+    border-left-color: rgba(255, 255, 255, 0.38);
+}
+
+[data-theme="dark"] .sidebar-sublink.is-active {
+    color: #fff;
+    border-left-color: #fff;
 }
 
 .btn-close-sidebar {
@@ -266,14 +301,14 @@ a:hover {
 .sidebar-link:hover,
 .sidebar-group:hover {
     background: var(--bg-sidebar-hover);
-    color: #fff;
+    color: var(--cor-primaria-700);
     transform: translateX(2px);
 }
 
 .sidebar-link.is-active {
     background: var(--bg-sidebar-ativo);
-    color: #fff;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    color: var(--cor-primaria-700);
+    box-shadow: inset 0 0 0 1px #bfdbfe;
 }
 
 .sidebar-group {
@@ -298,7 +333,7 @@ a:hover {
     display: block;
     margin-left: 9px;
     margin-right: 3px;
-    border-left: 2px solid rgba(255, 255, 255, 0.16);
+    border-left: 2px solid var(--borda-media);
     border-radius: 0 var(--raio-xs) var(--raio-xs) 0;
     color: var(--texto-sidebar-fraco);
     padding: 7px 10px 7px 13px;
@@ -308,15 +343,15 @@ a:hover {
 }
 
 .sidebar-sublink:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border-left-color: rgba(255, 255, 255, 0.38);
+    background: var(--bg-sidebar-hover);
+    color: var(--cor-primaria-700);
+    border-left-color: var(--cor-primaria-300);
 }
 
 .sidebar-sublink.is-active {
-    background: rgba(255, 255, 255, 0.16);
-    color: #fff;
-    border-left-color: #fff;
+    background: var(--bg-sidebar-ativo);
+    color: var(--cor-primaria-700);
+    border-left-color: var(--cor-primaria-500);
 }
 
 .sidebar-note {
@@ -1074,24 +1109,27 @@ a:hover {
 
 .login-hero {
     padding: clamp(20px, 3.2vh, 30px) clamp(20px, 2.4vw, 28px);
-    background: linear-gradient(150deg, rgba(20, 57, 97, 0.95) 0%, rgba(35, 94, 161, 0.88) 56%, rgba(53, 138, 225, 0.78) 100%);
-    color: #eef6ff;
+    background: linear-gradient(150deg, #f8fbff 0%, #edf6ff 58%, #e5f1ff 100%);
+    color: var(--texto-principal);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: clamp(12px, 1.8vh, 18px);
+    border-right: 1px solid var(--borda-suave);
 }
 
 .login-hero .login-logo {
-    width: clamp(136px, 13.5vw, 172px);
+    width: min(360px, 100%);
+    max-height: 100px;
     background: transparent;
     border-radius: 0;
     padding: 0;
     display: block;
+    object-fit: contain;
 }
 
 .login-hero h1 {
-    color: #fff;
+    color: var(--texto-principal);
     margin: 0 0 6px;
     font-size: clamp(1.3rem, 2.7vh, 1.64rem);
     line-height: 1.15;
@@ -1099,9 +1137,31 @@ a:hover {
 
 .login-hero p {
     margin: 0;
-    color: #dceafc;
+    color: var(--texto-secundario);
     max-width: 320px;
     font-size: clamp(0.88rem, 1.9vh, 0.96rem);
+}
+
+.login-hero .small {
+    color: var(--texto-secundario);
+}
+
+[data-theme="dark"] .login-hero {
+    background: linear-gradient(150deg, rgba(20, 57, 97, 0.95) 0%, rgba(35, 94, 161, 0.88) 56%, rgba(53, 138, 225, 0.78) 100%);
+    color: #eef6ff;
+    border-right-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .login-hero h1 {
+    color: #fff;
+}
+
+[data-theme="dark"] .login-hero p {
+    color: #dceafc;
+}
+
+[data-theme="dark"] .login-hero .small {
+    color: #dceafc;
 }
 
 .login-form-wrap {
@@ -1127,6 +1187,21 @@ a:hover {
 .login-form-wrap .mb-3,
 .login-form-wrap .mb-4 {
     margin-bottom: 0.82rem !important;
+}
+
+.form-section {
+    height: 100%;
+    border: 1px solid var(--borda-suave);
+    border-radius: var(--raio-sm);
+    background: var(--bg-superficie-secundaria);
+    padding: 16px;
+}
+
+.form-section__title {
+    margin: 0 0 14px;
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--texto-principal);
 }
 
 main.guest-main + .app-footer {
@@ -1363,14 +1438,10 @@ main.guest-main + .app-footer .app-footer__autor {
 
 @media (max-width: 767.98px) {
     .brand-logo-wrap {
-        width: 56px;
-        height: 56px;
-        padding: 8px;
-        flex-basis: 56px;
-    }
-
-    .brand-title {
-        font-size: 0.84rem;
+        width: min(190px, 100%);
+        height: 50px;
+        padding: 0;
+        flex-basis: auto;
     }
 
     .page-header__titulo {
